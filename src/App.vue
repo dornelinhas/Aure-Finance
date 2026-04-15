@@ -55,7 +55,7 @@
         <span class="text-[10px] font-bold">Cartões</span>
       </router-link>
       <button class="flex flex-col items-center gap-1 text-[var(--color-text-secondary)] bg-transparent border-none px-3 py-1" @click="mobileOpen = true">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></button>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         <span class="text-[10px] font-bold">Mais</span>
       </button>
     </nav>
