@@ -1,38 +1,38 @@
 <template>
   <div class="h-full flex flex-col bg-[var(--color-bg)] overflow-auto font-[var(--font-sans)] relative">
     
-    <div class="px-8 py-8 pb-12 w-full max-w-[1200px] mx-auto relative z-10">
+    <div class="px-4 sm:px-8 py-4 sm:py-8 pb-12 w-full max-w-[1200px] mx-auto relative z-10">
       
       <!-- Header -->
-      <div class="flex items-start justify-between gap-4 flex-wrap mb-10">
+      <div class="flex items-start justify-between gap-4 flex-wrap mb-6 sm:mb-10">
         <div>
-          <h1 class="text-[32px] font-extrabold tracking-tight text-[var(--color-text-primary)]">Meus Cartões</h1>
-          <p class="text-[14px] text-[var(--color-text-secondary)] mt-1.5 font-medium">Gerencie limites e despesas por cartão de crédito</p>
+          <h1 class="text-[24px] sm:text-[32px] font-extrabold tracking-tight text-[var(--color-text-primary)]">Meus Cartões</h1>
+          <p class="text-[12px] sm:text-[14px] text-[var(--color-text-secondary)] mt-1 font-medium">Gerencie limites e despesas por cartão</p>
         </div>
-        <button class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-[13px] font-semibold cursor-pointer transition-all duration-300 border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-primary)] shadow-sm hover:shadow-md hover:bg-[var(--color-hover)] hover:-translate-y-0.5" @click="openModal()">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        <button class="inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl text-[12px] sm:text-[13px] font-semibold cursor-pointer transition-all duration-300 border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-primary)] shadow-sm hover:shadow-md hover:bg-[var(--color-hover)] w-full sm:w-auto" @click="openModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
           Adicionar Cartão
         </button>
       </div>
 
       <!-- Empty State -->
-      <div v-if="cards.length === 0" class="w-full flex flex-col items-center justify-center py-20 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-3xl shadow-sm text-center">
-        <div class="w-20 h-20 bg-[var(--color-surface-secondary)] rounded-full flex items-center justify-center text-[var(--color-text-tertiary)] mb-5 shadow-sm">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+      <div v-if="cards.length === 0" class="w-full flex flex-col items-center justify-center py-12 sm:py-20 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl sm:rounded-3xl shadow-sm text-center px-6">
+        <div class="w-16 h-16 sm:w-20 sm:h-20 bg-[var(--color-surface-secondary)] rounded-full flex items-center justify-center text-[var(--color-text-tertiary)] mb-4 sm:mb-5 shadow-sm">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
         </div>
-        <h2 class="text-xl font-bold text-[var(--color-text-primary)] mb-2">Nenhum cartão cadastrado</h2>
-        <p class="text-[14px] text-[var(--color-text-secondary)] max-w-sm mb-6">Adicione seus cartões para acompanhar limites disponíveis, dias de fechamento e gastos por fatura.</p>
-        <button class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-[14px] font-bold cursor-pointer transition-all duration-300 border-none bg-[var(--color-accent)] text-white shadow-md hover:bg-[var(--color-accent-hover)] hover:shadow-lg hover:-translate-y-0.5" @click="openModal()">
+        <h2 class="text-lg sm:text-xl font-bold text-[var(--color-text-primary)] mb-2">Nenhum cartão cadastrado</h2>
+        <p class="text-[13px] sm:text-[14px] text-[var(--color-text-secondary)] max-w-sm mb-6">Adicione seus cartões para acompanhar limites disponíveis e gastos por fatura.</p>
+        <button class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-[14px] font-bold cursor-pointer transition-all duration-300 border-none bg-[var(--color-accent)] text-white shadow-md hover:bg-[var(--color-accent-hover)]" @click="openModal()">
           Cadastrar o Primeiro
         </button>
       </div>
 
       <!-- Split Layout: Cards Left, Details Right -->
-      <div v-else class="flex flex-col lg:flex-row gap-12 mt-6 mb-20 items-start">
+      <div v-else class="flex flex-col lg:flex-row gap-6 lg:gap-12 mt-2 sm:mt-6 mb-20 items-start">
         
         <!-- Left Side: 3D Stacked Cards -->
         <div class="wallet-container w-full lg:w-1/2 relative flex justify-center lg:justify-start" 
-             :style="{ minHeight: Math.max(500, cards.length * 70 + (activeCardId ? 500 : 280)) + 'px', transition: 'min-height 0.75s cubic-bezier(0.175, 0.885, 0.32, 1.15)' }">
+             :style="{ minHeight: walletMinHeight + 'px', transition: 'min-height 0.75s cubic-bezier(0.175, 0.885, 0.32, 1.15)' }">
           <div v-for="(card, index) in cards" 
                :key="card.id" 
                class="wallet-card-wrapper absolute w-full max-w-[420px]"
@@ -40,28 +40,30 @@
                :style="{ 
                  '--index': index, 
                  '--total': cards.length,
-                 'z-index': activeCardId === card.id ? 50 : index
+                 'z-index': activeCardId === card.id ? 50 : index,
+                 '--mobile-offset': '50px',
+                 '--desktop-offset': '70px'
                }"
                @click="activeCardId = activeCardId === card.id ? null : card.id">
             
             <!-- Physical Card Representation -->
-            <div class="card-visual relative w-full h-[240px] rounded-[24px] p-7 overflow-hidden flex flex-col justify-between shadow-2xl cursor-pointer" 
+            <div class="card-visual relative w-full h-[200px] sm:h-[240px] rounded-[20px] sm:rounded-[24px] p-5 sm:p-7 overflow-hidden flex flex-col justify-between shadow-2xl cursor-pointer" 
                  :style="{ background: getCardGradient(card.color) }">
               <!-- Subtle border overlay -->
-              <div class="absolute inset-0 border border-white/10 rounded-[24px] pointer-events-none"></div>
+              <div class="absolute inset-0 border border-white/10 rounded-[20px] sm:rounded-[24px] pointer-events-none"></div>
               
               <!-- Card Header -->
               <div class="relative z-10 flex justify-between items-start">
                 <div>
-                  <h3 class="text-[22px] font-extrabold text-white tracking-wide shadow-sm" style="text-shadow: 0 1px 3px rgba(0,0,0,0.3);">{{ card.name }}</h3>
-                  <p class="text-white/90 text-[11px] font-bold uppercase tracking-widest mt-1 shadow-sm">{{ card.brand }}</p>
+                  <h3 class="text-[18px] sm:text-[22px] font-extrabold text-white tracking-wide shadow-sm" style="text-shadow: 0 1px 3px rgba(0,0,0,0.3);">{{ card.name }}</h3>
+                  <p class="text-white/90 text-[10px] sm:text-[11px] font-bold uppercase tracking-widest mt-0.5 sm:mt-1 shadow-sm">{{ card.brand }}</p>
                 </div>
-                <img :src="brandLogos[card.brand]" class="h-9 w-16 object-contain drop-shadow-md" :alt="card.brand" />
+                <img :src="brandLogos[card.brand]" class="h-7 sm:h-9 w-12 sm:w-16 object-contain drop-shadow-md" :alt="card.brand" />
               </div>
 
               <!-- Card Middle (Chip) -->
-              <div class="relative z-10 my-2">
-                <div class="w-12 h-10 rounded-md bg-yellow-200/90 border border-yellow-400/50 flex flex-col justify-center items-center gap-[3px] shadow-sm">
+              <div class="relative z-10 my-1">
+                <div class="w-10 h-8 sm:w-12 sm:h-10 rounded-md bg-yellow-200/90 border border-yellow-400/50 flex flex-col justify-center items-center gap-[2px] sm:gap-[3px] shadow-sm">
                    <div class="w-full h-[1px] bg-yellow-600/40"></div>
                    <div class="w-full h-[1px] bg-yellow-600/40"></div>
                    <div class="w-full h-[1px] bg-yellow-600/40"></div>
@@ -71,12 +73,12 @@
               <!-- Card Bottom Info -->
               <div class="relative z-10 flex justify-between items-end text-white shadow-sm" style="text-shadow: 0 1px 3px rgba(0,0,0,0.3);">
                 <div>
-                  <p class="text-[10px] font-bold uppercase tracking-widest opacity-80 mb-1">Fechamento / Vencimento</p>
-                  <p class="text-[15px] font-semibold font-mono tracking-widest">Dia {{ card.closing_day }} • Dia {{ card.due_day }}</p>
+                  <p class="text-[9px] font-bold uppercase tracking-widest opacity-80 mb-0.5">Vencimento</p>
+                  <p class="text-[13px] sm:text-[15px] font-semibold font-mono tracking-widest">Dia {{ card.due_day }}</p>
                 </div>
                 <div class="text-right">
-                  <p class="text-[10px] font-bold uppercase tracking-widest opacity-80 mb-1">Limite Total</p>
-                  <p class="text-[18px] font-bold font-mono tracking-widest">{{ fmt(card.limit_amount) }}</p>
+                  <p class="text-[9px] font-bold uppercase tracking-widest opacity-80 mb-0.5">Limite Total</p>
+                  <p class="text-[15px] sm:text-[18px] font-bold font-mono tracking-widest">{{ fmt(card.limit_amount) }}</p>
                 </div>
               </div>            </div>
           </div>
@@ -85,87 +87,86 @@
         <!-- Right Side: Details Panel -->
         <div class="w-full lg:w-1/2 relative mt-4 lg:mt-0 min-h-[400px] z-20">
           <transition name="fade-slide" mode="out-in">
-            <div v-if="activeCard" :key="activeCard.id" class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[32px] p-8 shadow-2xl w-full max-w-[500px] lg:mx-0 mx-auto relative">
+            <div v-if="activeCard" :key="activeCard.id" class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[24px] sm:rounded-[32px] p-5 sm:p-8 shadow-2xl w-full max-w-[500px] lg:mx-0 mx-auto relative">
               
               <!-- Panel Header -->
-              <div class="flex justify-between items-center mb-8 border-b border-[var(--color-border)] pb-5">
-                <h4 class="text-[15px] font-extrabold text-[var(--color-text-primary)] uppercase tracking-wider flex items-center gap-2.5">
-                  <div class="w-3 h-3 rounded-full shadow-inner" :style="{ backgroundColor: activeCard.color }"></div>
+              <div class="flex justify-between items-center mb-6 sm:mb-8 border-b border-[var(--color-border)] pb-4 sm:pb-5">
+                <h4 class="text-[12px] sm:text-[15px] font-extrabold text-[var(--color-text-primary)] uppercase tracking-wider flex items-center gap-2">
+                  <div class="w-2.5 h-2.5 rounded-full shadow-inner" :style="{ backgroundColor: activeCard.color }"></div>
                   Fatura de {{ monthLabel }}
                 </h4>
-                <div class="flex gap-2">
-                  <button class="px-3.5 py-2 rounded-xl text-xs font-bold text-[var(--color-text-secondary)] hover:bg-[var(--color-hover)] hover:text-[var(--color-accent)] transition-all cursor-pointer border border-transparent" @click="openModal(activeCard)">Editar Cartão</button>
-                  <button class="px-3.5 py-2 rounded-xl text-xs font-bold text-[var(--color-text-secondary)] hover:bg-[var(--color-expense-bg)] hover:text-[var(--color-expense)] transition-all cursor-pointer border border-transparent" @click="remove(activeCard.id)">Excluir</button>
+                <div class="flex gap-1.5 sm:gap-2">
+                  <button class="px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-[10px] sm:text-xs font-bold text-[var(--color-text-secondary)] hover:bg-[var(--color-hover)] transition-all cursor-pointer border border-transparent" @click="openModal(activeCard)">Editar</button>
+                  <button class="px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-[10px] sm:text-xs font-bold text-[var(--color-text-secondary)] hover:bg-[var(--color-expense-bg)] hover:text-[var(--color-expense)] transition-all cursor-pointer border border-transparent" @click="remove(activeCard.id)">Excluir</button>
                 </div>
               </div>
               
               <!-- Invoice Status Card -->
-              <div class="mb-8 p-6 rounded-[24px] border border-[var(--color-border)] transition-all" :class="isBillPaid ? 'bg-[var(--color-income-bg)]/30 border-[var(--color-income)]/20' : 'bg-[var(--color-surface-secondary)]'">
+              <div class="mb-6 sm:mb-8 p-4 sm:p-6 rounded-[20px] sm:rounded-[24px] border border-[var(--color-border)] transition-all" :class="isBillPaid ? 'bg-[var(--color-income-bg)]/30 border-[var(--color-income)]/20' : 'bg-[var(--color-surface-secondary)]'">
                 <div class="flex justify-between items-start mb-4">
                   <div>
-                    <p class="text-[10px] font-bold text-[var(--color-text-tertiary)] uppercase tracking-widest mb-1">Total da Fatura Atual</p>
-                    <p class="text-3xl font-black text-[var(--color-text-primary)] tracking-tight">{{ fmt(currentBillAmount) }}</p>
+                    <p class="text-[9px] sm:text-[10px] font-bold text-[var(--color-text-tertiary)] uppercase tracking-widest mb-1">Total da Fatura Atual</p>
+                    <p class="text-2xl sm:text-3xl font-black text-[var(--color-text-primary)] tracking-tight">{{ fmt(currentBillAmount) }}</p>
                   </div>
-                  <button v-if="isBillPaid" class="group relative flex items-center gap-1.5 px-4 py-2.5 bg-[var(--color-income-bg)] text-[var(--color-income)] rounded-xl text-[12px] font-bold shadow-sm border border-[var(--color-income)]/30 hover:bg-[var(--color-expense-bg)] hover:text-[var(--color-expense)] hover:border-[var(--color-expense)]/30 cursor-pointer transition-all duration-200 overflow-hidden" @click="handleToggleInvoice(false)">
+                  <button v-if="isBillPaid" class="group relative flex items-center gap-1.5 px-3 sm:px-4 py-2 sm:py-2.5 bg-[var(--color-income-bg)] text-[var(--color-income)] rounded-xl text-[11px] sm:text-[12px] font-bold shadow-sm border border-[var(--color-income)]/30 hover:bg-[var(--color-expense-bg)] hover:text-[var(--color-expense)] hover:border-[var(--color-expense)]/30 cursor-pointer transition-all duration-200 overflow-hidden" @click="handleToggleInvoice(false)">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="group-hover:hidden"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="hidden group-hover:block"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                    <span class="group-hover:hidden">Mês Pago</span>
-                    <span class="hidden group-hover:inline">Estornar Pagto</span>
+                    <span class="group-hover:hidden">Pago</span>
+                    <span class="hidden group-hover:inline">Estornar</span>
                   </button>
-                  <button v-else-if="currentBillAmount > 0" class="px-5 py-2.5 rounded-xl bg-[var(--color-accent)] text-white text-[13px] font-bold shadow-lg hover:bg-[var(--color-accent-hover)] transition-all cursor-pointer border-none flex items-center gap-2" @click="handleToggleInvoice(true)">
-                    Pagar Fatura
+                  <button v-else-if="currentBillAmount > 0" class="px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-[var(--color-accent)] text-white text-[12px] sm:text-[13px] font-bold shadow-lg hover:bg-[var(--color-accent-hover)] transition-all cursor-pointer border-none flex items-center gap-1.5 sm:gap-2" @click="handleToggleInvoice(true)">
+                    Pagar
                   </button>
-                  <div v-else class="text-[11px] font-bold text-[var(--color-text-tertiary)] uppercase mt-2">Sem gastos</div>
                 </div>
 
-                <div v-if="!isBillPaid && currentBillAmount > 0" class="flex items-center gap-2 mt-4 pt-4 border-t border-[var(--color-border)]">
+                <div v-if="!isBillPaid && currentBillAmount > 0" class="flex items-center gap-2 mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-[var(--color-border)]">
                   <div class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></div>
-                  <p class="text-[11px] text-[var(--color-text-secondary)] font-bold uppercase tracking-tight">Vencimento em {{ activeCard.due_day }} de {{ monthLabel }}</p>
+                  <p class="text-[10px] sm:text-[11px] text-[var(--color-text-secondary)] font-bold uppercase tracking-tight">Vence dia {{ activeCard.due_day }}</p>
                 </div>
               </div>
 
               <!-- Limit Summary -->
-              <div class="mb-8">
-                 <div class="flex justify-between items-end mb-3">
+              <div class="mb-6 sm:mb-8">
+                 <div class="flex justify-between items-end mb-2 sm:mb-3">
                     <div class="flex flex-col">
-                      <span class="text-[10px] font-bold text-[var(--color-text-tertiary)] uppercase tracking-wider mb-1">Uso Total do Limite</span>
-                      <span class="text-xl font-extrabold text-[var(--color-text-primary)]">{{ fmt(totalDebt) }}</span>
+                      <span class="text-[9px] sm:text-[10px] font-bold text-[var(--color-text-tertiary)] uppercase tracking-wider mb-1">Uso Total do Limite</span>
+                      <span class="text-lg sm:text-xl font-extrabold text-[var(--color-text-primary)]">{{ fmt(totalDebt) }}</span>
                     </div>
                     <div class="text-right">
-                      <span class="text-[13px] font-black" :class="limitPct > 90 ? 'text-[var(--color-expense)]' : 'text-[var(--color-accent)]'">{{ limitPct }}%</span>
+                      <span class="text-[12px] sm:text-[13px] font-black" :class="limitPct > 90 ? 'text-[var(--color-expense)]' : 'text-[var(--color-accent)]'">{{ limitPct }}%</span>
                     </div>
                  </div>
-                 <div class="h-2 w-full bg-[var(--color-surface-secondary)] rounded-full overflow-hidden border border-[var(--color-border)]">
+                 <div class="h-1.5 sm:h-2 w-full bg-[var(--color-surface-secondary)] rounded-full overflow-hidden border border-[var(--color-border)]">
                     <div class="h-full transition-all duration-700 ease-out" :style="{ width: limitPct + '%', backgroundColor: limitPct > 90 ? 'var(--color-expense)' : activeCard.color }"></div>
                  </div>
               </div>
 
               <!-- Stats Breakdown -->
-              <div class="grid grid-cols-2 gap-4">
-                <div class="p-4 rounded-2xl bg-[var(--color-surface-secondary)]/50 border border-[var(--color-border)]">
-                  <p class="text-[10px] font-bold text-[var(--color-text-tertiary)] uppercase tracking-widest mb-1">Gasto no Mês</p>
-                  <p class="text-[15px] font-extrabold text-[var(--color-text-primary)]">{{ fmt(currentBillAmount) }}</p>
+              <div class="grid grid-cols-2 gap-3 sm:gap-4">
+                <div class="p-3 sm:p-4 rounded-2xl bg-[var(--color-surface-secondary)]/50 border border-[var(--color-border)]">
+                  <p class="text-[9px] sm:text-[10px] font-bold text-[var(--color-text-tertiary)] uppercase tracking-widest mb-1">Gasto no Mês</p>
+                  <p class="text-[13px] sm:text-[15px] font-extrabold text-[var(--color-text-primary)]">{{ fmt(currentBillAmount) }}</p>
                 </div>
-                <div class="p-4 rounded-2xl bg-[var(--color-surface-secondary)]/50 border border-[var(--color-border)]">
-                  <p class="text-[10px] font-bold text-[var(--color-text-tertiary)] uppercase tracking-widest mb-1">Parcelas Futuras</p>
-                  <p class="text-[15px] font-extrabold text-[var(--color-text-primary)]">{{ fmt(futureDebt) }}</p>
+                <div class="p-3 sm:p-4 rounded-2xl bg-[var(--color-surface-secondary)]/50 border border-[var(--color-border)]">
+                  <p class="text-[9px] sm:text-[10px] font-bold text-[var(--color-text-tertiary)] uppercase tracking-widest mb-1">Parcelas Futuras</p>
+                  <p class="text-[13px] sm:text-[15px] font-extrabold text-[var(--color-text-primary)]">{{ fmt(futureDebt) }}</p>
                 </div>
-                <div class="p-4 rounded-2xl bg-[var(--color-surface-secondary)]/50 border border-[var(--color-border)]">
-                  <p class="text-[10px] font-bold text-[var(--color-text-tertiary)] uppercase tracking-widest mb-1">Limite Livre</p>
-                  <p class="text-[15px] font-extrabold text-[var(--color-income)]">{{ fmt(activeCard.limit_amount - totalDebt) }}</p>
+                <div class="p-3 sm:p-4 rounded-2xl bg-[var(--color-surface-secondary)]/50 border border-[var(--color-border)]">
+                  <p class="text-[9px] sm:text-[10px] font-bold text-[var(--color-text-tertiary)] uppercase tracking-widest mb-1">Limite Livre</p>
+                  <p class="text-[13px] sm:text-[15px] font-extrabold text-[var(--color-income)]">{{ fmt(activeCard.limit_amount - totalDebt) }}</p>
                 </div>
-                <div class="p-4 rounded-2xl bg-[var(--color-surface-secondary)]/50 border border-[var(--color-border)]">
-                  <p class="text-[10px] font-bold text-[var(--color-text-tertiary)] uppercase tracking-widest mb-1">Dia Fechamento</p>
-                  <p class="text-[15px] font-extrabold text-[var(--color-text-primary)]">{{ activeCard.closing_day }}</p>
+                <div class="p-3 sm:p-4 rounded-2xl bg-[var(--color-surface-secondary)]/50 border border-[var(--color-border)]">
+                  <p class="text-[9px] sm:text-[10px] font-bold text-[var(--color-text-tertiary)] uppercase tracking-widest mb-1">Fechamento</p>
+                  <p class="text-[13px] sm:text-[15px] font-extrabold text-[var(--color-text-primary)]">Dia {{ activeCard.closing_day }}</p>
                 </div>
               </div>
             </div>
             
             <!-- Empty Panel State -->
-            <div v-else class="h-[450px] w-full max-w-[500px] flex flex-col items-center justify-center text-center opacity-40 absolute lg:mx-0 mx-auto bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[32px] border-dashed">
-              <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="mb-5 text-[var(--color-text-primary)]"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
-              <p class="text-[18px] font-extrabold text-[var(--color-text-primary)] mb-2">Selecione um cartão</p>
-              <p class="text-[14px] text-[var(--color-text-secondary)] font-medium">Toque em um cartão na carteira<br>para visualizar os detalhes da fatura.</p>
+            <div v-else class="h-[300px] sm:h-[450px] w-full max-w-[500px] flex flex-col items-center justify-center text-center opacity-40 absolute lg:mx-0 mx-auto bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[24px] sm:rounded-[32px] border-dashed px-6">
+              <svg width="40" height="40" sm:width="56" sm:height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="mb-4 sm:mb-5 text-[var(--color-text-primary)]"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+              <p class="text-base sm:text-[18px] font-extrabold text-[var(--color-text-primary)] mb-1 sm:mb-2">Selecione um cartão</p>
+              <p class="text-[12px] sm:text-[14px] text-[var(--color-text-secondary)] font-medium">Toque em um cartão na carteira<br>para ver os detalhes.</p>
             </div>
           </transition>
         </div>
@@ -247,6 +248,15 @@ const transactions = ref([])
 const showModal = ref(false)
 const editing = ref(null)
 const activeCardId = ref(null)
+
+const walletMinHeight = computed(() => {
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 1024;
+  const cardOffset = isMobile ? 50 : 70;
+  const baseHeight = isMobile ? 350 : 500;
+  const detailHeight = isMobile ? 450 : 500;
+  
+  return Math.max(baseHeight, cards.value.length * cardOffset + (activeCardId.value ? detailHeight : 280));
+})
 
 const activeCard = computed(() => {
   if (!activeCardId.value) return null
@@ -404,10 +414,16 @@ async function remove(id) {
   will-change: transform, opacity, filter;
   
   /* Natural cascade layout */
-  --offset-y: calc(var(--index) * 70px);
+  --offset-y: calc(var(--index) * var(--desktop-offset));
   --depth: calc(var(--total) - var(--index));
   
   transform: translateY(var(--offset-y)) scale(calc(1 - var(--depth) * 0.02)) rotateX(-12deg);
+}
+
+@media (max-width: 1023px) {
+  .wallet-card-wrapper {
+    --offset-y: calc(var(--index) * var(--mobile-offset));
+  }
 }
 
 /* Hover on non-active cards slightly lifts them */
@@ -425,16 +441,22 @@ async function remove(id) {
 .wallet-card-wrapper.has-active {
   opacity: 0.5;
   filter: blur(2px) grayscale(30%);
-  transform: translateY(calc(var(--offset-y) + 230px)) scale(calc(1 - var(--depth) * 0.02)) rotateX(-15deg);
+  transform: translateY(calc(var(--offset-y) + 180px)) scale(calc(1 - var(--depth) * 0.02)) rotateX(-15deg);
   cursor: pointer;
   pointer-events: auto;
+}
+
+@media (max-width: 640px) {
+  .wallet-card-wrapper.has-active {
+    transform: translateY(calc(var(--offset-y) + 160px)) scale(calc(1 - var(--depth) * 0.02)) rotateX(-15deg);
+  }
 }
 
 /* Hover on inactive cards while one is active */
 .wallet-card-wrapper.has-active:hover {
   opacity: 0.8;
   filter: blur(0px) grayscale(0%);
-  transform: translateY(calc(var(--offset-y) + 220px)) scale(calc(1 - var(--depth) * 0.02 + 0.02)) rotateX(-5deg);
+  transform: translateY(calc(var(--offset-y) + 170px)) scale(calc(1 - var(--depth) * 0.02 + 0.02)) rotateX(-5deg);
 }
 
 /* Animations for the right panel */

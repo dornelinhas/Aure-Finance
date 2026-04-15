@@ -1,54 +1,54 @@
 <template>
-  <div class="grid grid-cols-2 gap-5 mb-5 max-md:grid-cols-1 anim-section delay-3">
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 mb-4 sm:mb-5 anim-section delay-3">
     <!-- Upcoming Bills -->
-    <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl p-6 shadow-sm">
-      <h3 class="text-[11px] font-bold text-[var(--color-text-secondary)] uppercase tracking-widest mb-4">Próximas Cobranças (7 dias)</h3>
-      <div v-if="store.loading" class="flex flex-col gap-4">
-        <div v-for="i in 3" :key="i" class="flex items-center justify-between pb-3 border-b border-[var(--color-border)] last:border-0 last:pb-0">
-          <div class="flex flex-col gap-2">
-            <SkeletonLoader width="w-24" height="h-4" />
-            <SkeletonLoader width="w-16" height="h-3" />
+    <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl p-4 sm:p-6 shadow-sm">
+      <h3 class="text-[10px] sm:text-[11px] font-bold text-[var(--color-text-secondary)] uppercase tracking-widest mb-3 sm:mb-4">Próximas Cobranças (7 dias)</h3>
+      <div v-if="store.loading" class="flex flex-col gap-3 sm:gap-4">
+        <div v-for="i in 3" :key="i" class="flex items-center justify-between pb-2 sm:pb-3 border-b border-[var(--color-border)] last:border-0 last:pb-0">
+          <div class="flex flex-col gap-1.5 sm:gap-2">
+            <SkeletonLoader width="w-20 sm:w-24" height="h-3 sm:h-4" />
+            <SkeletonLoader width="w-12 sm:w-16" height="h-2.5 sm:h-3" />
           </div>
-          <SkeletonLoader width="w-12" height="h-4" />
+          <SkeletonLoader width="w-10 sm:w-12" height="h-3 sm:h-4" />
         </div>
       </div>
-      <p v-else-if="upcoming.length === 0" class="text-[13px] text-[var(--color-text-secondary)] font-medium">Nenhuma cobrança próxima.</p>
-      <div v-else class="flex flex-col gap-3">
-        <div v-for="s in upcoming.slice(0, 5)" :key="s.id" class="flex items-center justify-between pb-3 border-b border-[var(--color-border)] last:border-0 last:pb-0">
-          <div>
-            <p class="text-[13px] font-semibold text-[var(--color-text-primary)]">{{ s.name }}</p>
-            <p class="text-[11px] text-[var(--color-text-tertiary)] font-medium">
+      <p v-else-if="upcoming.length === 0" class="text-[12px] sm:text-[13px] text-[var(--color-text-secondary)] font-medium">Nenhuma cobrança próxima.</p>
+      <div v-else class="flex flex-col gap-2 sm:gap-3">
+        <div v-for="s in upcoming.slice(0, 5)" :key="s.id" class="flex items-center justify-between pb-2 sm:pb-3 border-b border-[var(--color-border)] last:border-0 last:pb-0">
+          <div class="min-w-0 pr-2">
+            <p class="text-[12px] sm:text-[13px] font-semibold text-[var(--color-text-primary)] truncate">{{ s.name }}</p>
+            <p class="text-[10px] sm:text-[11px] text-[var(--color-text-tertiary)] font-medium">
               {{ s.daysLeft === 0 ? 'Hoje' : s.daysLeft === 1 ? 'Amanhã' : `Em ${s.daysLeft} dias` }}
             </p>
           </div>
-          <span class="text-[13px] font-bold text-[var(--color-expense)]">{{ fmt(s.amount) }}</span>
+          <span class="text-[12px] sm:text-[13px] font-bold text-[var(--color-expense)] shrink-0">{{ fmt(s.amount) }}</span>
         </div>
       </div>
     </div>
 
     <!-- Budget Alerts -->
-    <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl p-6 shadow-sm">
-      <h3 class="text-[11px] font-bold text-[var(--color-text-secondary)] uppercase tracking-widest mb-4">Orçamento por Categoria</h3>
-      <div v-if="store.loading" class="flex flex-col gap-5">
-        <div v-for="i in 2" :key="i" class="flex flex-col gap-2 pb-3 border-b border-[var(--color-border)] last:border-0 last:pb-0">
+    <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl p-4 sm:p-6 shadow-sm">
+      <h3 class="text-[10px] sm:text-[11px] font-bold text-[var(--color-text-secondary)] uppercase tracking-widest mb-3 sm:mb-4">Orçamento por Categoria</h3>
+      <div v-if="store.loading" class="flex flex-col gap-4 sm:gap-5">
+        <div v-for="i in 2" :key="i" class="flex flex-col gap-1.5 sm:gap-2 pb-2 sm:pb-3 border-b border-[var(--color-border)] last:border-0 last:pb-0">
           <div class="flex justify-between">
-            <SkeletonLoader width="w-20" height="h-4" />
-            <SkeletonLoader width="w-10" height="h-4" />
+            <SkeletonLoader width="w-16 sm:w-20" height="h-3 sm:h-4" />
+            <SkeletonLoader width="w-8 sm:w-10" height="h-3 sm:h-4" />
           </div>
-          <SkeletonLoader width="w-full" height="h-1.5" radius="rounded-full" />
+          <SkeletonLoader width="w-full" height="h-1 sm:h-1.5" radius="rounded-full" />
         </div>
       </div>
-      <p v-else-if="overBudgetAlerts.length === 0" class="text-[13px] text-[var(--color-text-secondary)] font-medium">Nenhum alerta de orçamento.</p>
-      <div v-else class="flex flex-col gap-3">
-        <div v-for="a in overBudgetAlerts.slice(0, 5)" :key="a.name" class="pb-3 border-b border-[var(--color-border)] last:border-0 last:pb-0">
-          <div class="flex items-center justify-between mb-1.5">
-            <span class="text-[13px] font-semibold text-[var(--color-text-primary)]">{{ a.name }}</span>
-            <span class="text-[11px] font-bold" :class="a.status === 'exceeded' ? 'text-[var(--color-expense)]' : 'text-[var(--color-warning)]'">{{ a.percent }}%</span>
+      <p v-else-if="overBudgetAlerts.length === 0" class="text-[12px] sm:text-[13px] text-[var(--color-text-secondary)] font-medium">Nenhum alerta de orçamento.</p>
+      <div v-else class="flex flex-col gap-2 sm:gap-3">
+        <div v-for="a in overBudgetAlerts.slice(0, 5)" :key="a.name" class="pb-2 sm:pb-3 border-b border-[var(--color-border)] last:border-0 last:pb-0">
+          <div class="flex items-center justify-between mb-1 sm:mb-1.5">
+            <span class="text-[12px] sm:text-[13px] font-semibold text-[var(--color-text-primary)] truncate pr-2">{{ a.name }}</span>
+            <span class="text-[10px] sm:text-[11px] font-bold shrink-0" :class="a.status === 'exceeded' ? 'text-[var(--color-expense)]' : 'text-[var(--color-warning)]'">{{ a.percent }}%</span>
           </div>
-          <div class="h-1.5 w-full bg-[var(--color-surface-secondary)] rounded-full overflow-hidden">
+          <div class="h-1 sm:h-1.5 w-full bg-[var(--color-surface-secondary)] rounded-full overflow-hidden">
             <div class="h-full rounded-full transition-all duration-500" :style="{ width: Math.min(100, a.percent) + '%', backgroundColor: a.status === 'exceeded' ? 'var(--color-expense)' : 'var(--color-warning)' }"></div>
           </div>
-          <p class="text-[10px] font-medium text-[var(--color-text-tertiary)] mt-1">{{ fmt(a.spent) }} de {{ fmt(a.limit) }}</p>
+          <p class="text-[9px] sm:text-[10px] font-medium text-[var(--color-text-tertiary)] mt-1">{{ fmt(a.spent) }} de {{ fmt(a.limit) }}</p>
         </div>
       </div>
     </div>
