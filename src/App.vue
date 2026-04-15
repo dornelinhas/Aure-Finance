@@ -1,16 +1,20 @@
 <template>
   <div class="flex min-h-screen bg-[var(--color-bg)] font-[var(--font-sans)]">
     <!-- Mobile header -->
-    <div class="hidden max-md:flex fixed top-0 left-0 right-0 h-14 bg-[var(--color-surface-secondary)]/80 backdrop-blur-md border-b border-[var(--color-border)] z-[99] items-center justify-between px-4">
-      <div class="flex items-center gap-2">
-        <div class="w-7 h-7 rounded-lg bg-[var(--color-accent)] flex items-center justify-center shadow-sm">
+    <div class="hidden max-md:flex fixed top-0 left-0 right-0 h-14 bg-[var(--color-surface-secondary)]/80 backdrop-blur-md border-b border-[var(--color-border)] z-[99] items-center px-4">
+      <div class="w-10 flex items-center justify-start">
+        <div class="w-7 h-7 rounded-lg bg-[var(--color-accent)] flex items-center justify-center shadow-sm shrink-0">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
             <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
           </svg>
         </div>
-        <span class="font-extrabold text-base tracking-tight text-[var(--color-text-primary)]">Aurea Finance</span>
       </div>
-      <div class="flex items-center gap-2">
+      
+      <div class="flex-1 flex justify-center">
+        <span class="font-extrabold text-base tracking-tight text-[var(--color-text-primary)] whitespace-nowrap">Aurea Finance</span>
+      </div>
+
+      <div class="w-10 flex items-center justify-end">
         <button class="bg-[var(--color-surface-secondary)] border border-[var(--color-border)] rounded-full w-8 h-8 flex items-center justify-center cursor-pointer text-[var(--color-text-secondary)] transition-all" @click="toggleTheme">
           <svg v-if="theme === 'dark'" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
           <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
