@@ -24,16 +24,16 @@
     </div>
 
     <!-- Right: Key Metrics -->
-    <div class="relative z-10 grid grid-cols-2 sm:flex sm:gap-8 lg:pr-4 w-full sm:w-auto max-lg:justify-between gap-4">
-      <div class="flex flex-col items-start sm:items-end">
+    <div class="relative z-10 grid grid-cols-2 sm:flex sm:gap-8 lg:pr-4 w-full sm:w-auto gap-4 items-center justify-center">
+      <div class="flex flex-col items-center sm:items-end text-center sm:text-right">
         <span class="text-[9px] sm:text-[11px] font-bold opacity-70 uppercase tracking-widest mb-1">Total Gastos</span>
         <div v-if="store.loading" class="mt-1">
           <SkeletonLoader width="w-24" height="h-6" class="opacity-20 bg-white!" />
         </div>
         <span v-else class="text-[16px] sm:text-[20px] font-bold">{{ fmt(totalExpense + cardExpense) }}</span>
       </div>
-      <router-link to="/cartoes" class="flex flex-col items-start sm:items-end cursor-pointer hover:opacity-80 transition-opacity no-underline text-white">
-        <span class="text-[9px] sm:text-[11px] font-bold opacity-70 uppercase tracking-widest mb-1 flex items-center gap-1.5">
+      <router-link to="/cartoes" class="flex flex-col items-center sm:items-end text-center sm:text-right cursor-pointer hover:opacity-80 transition-opacity no-underline text-white">
+        <span class="text-[9px] sm:text-[11px] font-bold opacity-70 uppercase tracking-widest mb-1 flex items-center gap-1.5 justify-center sm:justify-end">
           Fatura Cartão
         </span>
         <div v-if="store.loading" class="mt-1">
@@ -42,7 +42,7 @@
         <span v-else class="text-[16px] sm:text-[20px] font-bold">{{ fmt(cardExpense) }}</span>
         <span v-if="!store.loading" class="text-[8px] sm:text-[10px] font-medium opacity-70">Vence dia {{ store.settings.credit_card_due_day || 10 }}</span>
       </router-link>
-      <div class="flex flex-col items-start sm:items-end">
+      <div class="flex flex-col items-center sm:items-end text-center sm:text-right">
         <span class="text-[9px] sm:text-[11px] font-bold opacity-70 uppercase tracking-widest mb-1">Receita (Bruta)</span>
         <div v-if="store.loading" class="mt-1">
           <SkeletonLoader width="w-24" height="h-6" class="opacity-20 bg-white!" />

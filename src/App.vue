@@ -2,22 +2,20 @@
   <div class="flex min-h-screen bg-[var(--color-bg)] font-[var(--font-sans)]">
     <!-- Mobile header -->
     <div class="hidden max-md:flex fixed top-0 left-0 right-0 h-14 bg-[var(--color-surface-secondary)] border-b border-[var(--color-border)] z-[250] items-center px-4">
-      <div class="w-10 flex items-center justify-start">
-        <div class="w-7 h-7 rounded-lg bg-[var(--color-accent)] flex items-center justify-center shadow-sm shrink-0">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-            <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
-          </svg>
-        </div>
+      <div class="w-12 flex items-center justify-start">
+        <button class="bg-transparent border-none text-[var(--color-text-secondary)] cursor-pointer p-1" @click="mobileOpen = true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
       </div>
       
-      <div class="flex-1 flex justify-center">
-        <span class="font-extrabold text-base tracking-tight text-[var(--color-text-primary)] whitespace-nowrap">Aurea Finance</span>
+      <div class="flex-1 flex justify-center text-center">
+        <span class="font-extrabold text-base tracking-tight text-[var(--color-text-primary)]">Aurea Finance</span>
       </div>
 
-      <div class="w-10 flex items-center justify-end">
-        <button class="bg-[var(--color-surface-secondary)] border border-[var(--color-border)] rounded-full w-8 h-8 flex items-center justify-center cursor-pointer text-[var(--color-text-secondary)] transition-all" @click="toggleTheme">
-          <svg v-if="theme === 'dark'" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-          <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <div class="w-12 flex items-center justify-end">
+        <button class="bg-transparent border-none text-[var(--color-text-secondary)] cursor-pointer p-1" @click="toggleTheme">
+          <svg v-if="theme === 'dark'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          <svg v-else width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         </button>
       </div>
     </div>
@@ -32,7 +30,7 @@
     <!-- Sidebar -->
     <AppSidebar
       class="max-md:!fixed max-md:!left-0 max-md:!top-0 max-md:!bottom-0 max-md:!z-[400] max-md:transition-transform max-md:duration-300"
-      :class="{ 'max-md:translate-x-0': mobileOpen, 'max-md:-translate-x-full': !mobileOpen, 'w-[72px]!': desktopCollapsed }"
+      :class="{ 'max-md:translate-x-0': mobileOpen, 'max-md:-translate-x-full': !mobileOpen, 'max-md:!w-[280px]': true, 'w-[72px]!': desktopCollapsed && !mobileOpen }"
       :collapsed="desktopCollapsed"
       @navigate="mobileOpen = false"
     />
@@ -52,7 +50,7 @@
           class="w-12 h-12 rounded-full bg-[var(--color-accent)] text-white shadow-lg flex items-center justify-center cursor-pointer hover:scale-105 transition-all border-none"
           @click="openQuickAdd"
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
         </button>
       </div>
       <router-link to="/cartoes" class="flex flex-col items-center gap-1 text-[var(--color-text-secondary)] no-underline px-3 py-1" :class="{ 'text-[var(--color-accent)]!': $route.name === 'cards' }">
@@ -60,15 +58,15 @@
         <span class="text-[10px] font-bold">Cartões</span>
       </router-link>
       <button class="flex flex-col items-center gap-1 text-[var(--color-text-secondary)] bg-transparent border-none px-3 py-1 cursor-pointer" @click="mobileOpen = true">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-        <span class="text-[10px] font-bold">Menu</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+        <span class="text-[10px] font-bold">Mais</span>
       </button>
     </nav>
 
       <!-- Main content -->
       <main 
-        class="flex-1 min-h-screen flex flex-col relative transition-all duration-300 max-w-full overflow-x-hidden" 
-        :class="{ 'max-md:pt-14 max-md:pb-16 max-md:!ml-0': true }"
+        class="flex-1 min-h-screen flex flex-col relative transition-all duration-300 w-full max-w-full overflow-x-hidden" 
+        :class="{ 'max-md:!pt-14 max-md:!pb-16 max-md:!ml-0': true }"
         :style="{ marginLeft: desktopCollapsed ? '72px' : 'var(--sidebar-width)' }"
       >
         <!-- Desktop Header -->
