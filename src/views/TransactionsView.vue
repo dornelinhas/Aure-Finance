@@ -1,46 +1,50 @@
 <template>
   <div>
-    <div class="px-8 pt-8 flex items-start justify-between gap-4 flex-wrap">
+    <div class="px-4 sm:px-8 pt-4 sm:pt-8 flex items-start justify-between gap-4 flex-wrap">
       <div>
-        <h1 class="text-[28px] font-extrabold tracking-tight">Transações</h1>
-        <p class="text-[13px] text-[var(--color-text-secondary)] mt-1 font-medium">{{ filtered.length }} registros</p>
+        <h1 class="text-[24px] sm:text-[28px] font-extrabold tracking-tight">Transações</h1>
+        <p class="text-[12px] sm:text-[13px] text-[var(--color-text-secondary)] mt-1 font-medium">{{ filtered.length }} registros</p>
       </div>
-      <div class="flex gap-2 flex-nowrap">
-        <div class="flex bg-[var(--color-surface-secondary)]/50 p-1 rounded-xl border border-[var(--color-border)] mr-2">
-          <button 
-            class="px-4 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer border-none"
-            :class="viewTab === 'geral' ? 'bg-[var(--color-surface)] text-[var(--color-accent)] shadow-sm' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'"
-            @click="viewTab = 'geral'"
-          >Geral</button>
-          <button 
-            class="px-4 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer border-none"
-            :class="viewTab === 'debts' ? 'bg-[var(--color-surface)] text-[var(--color-expense)] shadow-sm' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'"
-            @click="viewTab = 'debts'"
-          >Dívidas Externas</button>
-        </div>
-        <button class="inline-flex items-center justify-center gap-1.5 px-4.5 py-2.5 rounded-lg text-sm font-semibold cursor-pointer transition-all duration-150 border border-[var(--color-border)] bg-[var(--color-surface-secondary)] text-[var(--color-text-primary)] hover:bg-[var(--color-hover)]" @click="handleExportExcel">Exportar Excel</button>
-        <button class="inline-flex items-center justify-center gap-1.5 px-4.5 py-2.5 rounded-lg text-sm font-semibold cursor-pointer transition-all duration-150 border-none bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)]" @click="openModal()">Nova Transação</button>
+      <div class="flex gap-2 w-full sm:w-auto">
+        <button class="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-lg text-sm font-semibold cursor-pointer transition-all duration-150 border border-[var(--color-border)] bg-[var(--color-surface-secondary)] text-[var(--color-text-primary)] hover:bg-[var(--color-hover)]" @click="handleExportExcel">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden sm:block"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          Exportar
+        </button>
+        <button class="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-lg text-sm font-semibold cursor-pointer transition-all duration-150 border-none bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)]" @click="openModal()">Novo</button>
       </div>
     </div>
 
-    <div class="px-8 py-6 pb-14">
+    <div class="px-4 sm:px-8 py-4 sm:py-6 pb-20">
+      <div class="flex bg-[var(--color-surface-secondary)]/50 p-1 rounded-xl border border-[var(--color-border)] mb-4">
+        <button 
+          class="flex-1 px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer border-none"
+          :class="viewTab === 'geral' ? 'bg-[var(--color-surface)] text-[var(--color-accent)] shadow-sm' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'"
+          @click="viewTab = 'geral'"
+        >Geral</button>
+        <button 
+          class="flex-1 px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer border-none"
+          :class="viewTab === 'debts' ? 'bg-[var(--color-surface)] text-[var(--color-expense)] shadow-sm' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'"
+          @click="viewTab = 'debts'"
+        >Dívidas Externas</button>
+      </div>
+
       <!-- Summary Totals -->
-      <div v-if="viewTab === 'geral'" class="grid grid-cols-4 gap-4 mb-5 max-lg:grid-cols-2 max-md:grid-cols-1">
-        <div class="bg-[var(--color-income-bg)] border border-[var(--color-income-bg)] rounded-xl px-6 py-5 shadow-sm">
-          <p class="text-[12px] font-black uppercase tracking-[0.1em] text-[var(--color-income)] mb-1.5">Receitas Pessoais</p>
-          <p class="text-2xl font-black text-[var(--color-income)]">{{ fmt(totIncome) }}</p>
+      <div v-if="viewTab === 'geral'" class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-5">
+        <div class="bg-[var(--color-income-bg)] border border-[var(--color-income-bg)] rounded-xl px-4 sm:px-6 py-4 sm:py-5 shadow-sm">
+          <p class="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.1em] text-[var(--color-income)] mb-1">Receitas</p>
+          <p class="text-lg sm:text-2xl font-black text-[var(--color-income)] leading-tight">{{ fmt(totIncome) }}</p>
         </div>
-        <div class="bg-[var(--color-expense-bg)] border border-[var(--color-expense-bg)] rounded-xl px-6 py-5 shadow-sm">
-          <p class="text-[12px] font-black uppercase tracking-[0.1em] text-[var(--color-expense)] mb-1.5">Despesas Pessoais</p>
-          <p class="text-2xl font-black text-[var(--color-expense)]">{{ fmt(totExpense) }}</p>
+        <div class="bg-[var(--color-expense-bg)] border border-[var(--color-expense-bg)] rounded-xl px-4 sm:px-6 py-4 sm:py-5 shadow-sm">
+          <p class="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.1em] text-[var(--color-expense)] mb-1">Despesas</p>
+          <p class="text-lg sm:text-2xl font-black text-[var(--color-expense)] leading-tight">{{ fmt(totExpense) }}</p>
         </div>
-        <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl px-6 py-5 shadow-sm">
-          <p class="text-[12px] font-black uppercase tracking-[0.1em] text-[var(--color-text-secondary)] mb-1.5">Gasto Conta</p>
-          <p class="text-2xl font-black text-[var(--color-secondary)]">{{ fmt(totCashExpense) }}</p>
+        <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl px-4 sm:px-6 py-4 sm:py-5 shadow-sm">
+          <p class="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.1em] text-[var(--color-text-secondary)] mb-1">Dinheiro</p>
+          <p class="text-lg sm:text-2xl font-black text-[var(--color-secondary)] leading-tight">{{ fmt(totCashExpense) }}</p>
         </div>
-        <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl px-6 py-5 shadow-sm">
-          <p class="text-[12px] font-black uppercase tracking-[0.1em] text-[var(--color-text-secondary)] mb-1.5">Gasto Cartão</p>
-          <p class="text-2xl font-black text-[var(--color-accent)]">{{ fmt(totCardExpense) }}</p>
+        <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl px-4 sm:px-6 py-4 sm:py-5 shadow-sm">
+          <p class="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.1em] text-[var(--color-text-secondary)] mb-1">Cartão</p>
+          <p class="text-lg sm:text-2xl font-black text-[var(--color-accent)] leading-tight">{{ fmt(totCardExpense) }}</p>
         </div>
       </div>
 
@@ -61,28 +65,30 @@
       <!-- Filters -->
       <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl shadow-[var(--shadow-sm)] mb-4 overflow-hidden">
         <!-- Primary Filter Row -->
-        <div class="px-4 py-3.5 flex flex-wrap items-center gap-2">
-          <input class="form-input max-w-[220px]" placeholder="Buscar..." v-model="search" />
-          <div class="flex gap-1.5">
-            <button
-              v-for="[val, label] in [['all','Todos'],['income','Receitas'],['expense','Despesas']]"
-              :key="val"
-              @click="filter = val"
-              class="px-3 py-1.5 rounded-md text-xs font-semibold cursor-pointer transition-all duration-150 border-none font-[var(--font-sans)]"
-              :class="filterBtnClass(val)"
-            >{{ label }}</button>
+        <div class="px-3 sm:px-4 py-3 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
+          <div class="relative flex-1">
+            <svg class="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-tertiary)]" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input class="form-input !pl-9 !py-2 text-sm w-full" placeholder="Buscar..." v-model="search" />
           </div>
-          <button class="px-3 py-1.5 rounded-md text-xs font-semibold cursor-pointer transition-all duration-150 border-none bg-transparent text-[var(--color-text-secondary)] font-[var(--font-sans)] hover:bg-[var(--color-hover)] hover:text-[var(--color-text-primary)]" @click="sortDesc = !sortDesc">
-            {{ sortDesc ? 'Recente' : 'Antigo' }}
-          </button>
-          <button 
-            class="ml-auto px-3 py-1.5 rounded-md text-xs font-bold cursor-pointer transition-all duration-150 border font-[var(--font-sans)] flex items-center gap-1.5"
-            :class="showAdvanced ? 'bg-[var(--color-accent-bg)] text-[var(--color-accent)] border-[var(--color-accent)]/30' : 'bg-transparent text-[var(--color-text-secondary)] border-[var(--color-border)] hover:bg-[var(--color-hover)]'"
-            @click="showAdvanced = !showAdvanced"
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
-            Filtros{{ activeFilterCount > 0 ? ` (${activeFilterCount})` : '' }}
-          </button>
+          <div class="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-hide">
+            <div class="flex bg-[var(--color-surface-secondary)]/50 p-1 rounded-lg border border-[var(--color-border)] shrink-0">
+              <button
+                v-for="[val, label] in [['all','Todos'],['income','Receitas'],['expense','Despesas']]"
+                :key="val"
+                @click="filter = val"
+                class="px-3 py-1.5 rounded-md text-[11px] font-bold cursor-pointer transition-all duration-150 border-none whitespace-nowrap"
+                :class="filterBtnClass(val)"
+              >{{ label }}</button>
+            </div>
+            <button 
+              class="px-3 py-2 rounded-lg text-[11px] font-bold cursor-pointer transition-all duration-150 border font-[var(--font-sans)] flex items-center gap-1.5 shrink-0"
+              :class="showAdvanced ? 'bg-[var(--color-accent-bg)] text-[var(--color-accent)] border-[var(--color-accent)]/30' : 'bg-[var(--color-surface)] text-[var(--color-text-secondary)] border-[var(--color-border)]'"
+              @click="showAdvanced = !showAdvanced"
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+              Filtros{{ activeFilterCount > 0 ? ` (${activeFilterCount})` : '' }}
+            </button>
+          </div>
         </div>
 
         <!-- Advanced Filters Panel (collapsible) -->

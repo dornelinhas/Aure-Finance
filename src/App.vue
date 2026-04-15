@@ -1,18 +1,27 @@
 <template>
   <div class="flex min-h-screen bg-[var(--color-bg)] font-[var(--font-sans)]">
     <!-- Mobile header -->
-    <div class="hidden max-md:flex fixed top-0 left-0 right-0 h-14 bg-[var(--color-surface-secondary)] border-b border-[var(--color-border)] z-[99] items-center justify-between px-4">
-      <button class="bg-transparent border-none text-lg font-extrabold text-[var(--color-text-primary)] cursor-pointer p-2 font-[var(--font-sans)]" @click="mobileOpen = true">Menu</button>
-      <span class="font-extrabold text-base tracking-tight">Aurea Finance</span>
-      <button class="bg-[var(--color-surface-secondary)] border border-[var(--color-border)] rounded-md px-3 py-1.5 cursor-pointer text-xs font-semibold text-[var(--color-text-secondary)] font-[var(--font-sans)] transition-all duration-150 hover:bg-[var(--color-hover)] hover:text-[var(--color-text-primary)]" @click="toggleTheme">
-        {{ theme === 'dark' ? 'Light' : 'Dark' }}
-      </button>
+    <div class="hidden max-md:flex fixed top-0 left-0 right-0 h-14 bg-[var(--color-surface-secondary)]/80 backdrop-blur-md border-b border-[var(--color-border)] z-[99] items-center justify-between px-4">
+      <div class="flex items-center gap-2">
+        <div class="w-7 h-7 rounded-lg bg-[var(--color-accent)] flex items-center justify-center shadow-sm">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+          </svg>
+        </div>
+        <span class="font-extrabold text-base tracking-tight text-[var(--color-text-primary)]">Aurea Finance</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button class="bg-[var(--color-surface-secondary)] border border-[var(--color-border)] rounded-full w-8 h-8 flex items-center justify-center cursor-pointer text-[var(--color-text-secondary)] transition-all" @click="toggleTheme">
+          <svg v-if="theme === 'dark'" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+      </div>
     </div>
 
     <!-- Sidebar backdrop (mobile) -->
     <div
-      class="hidden fixed inset-0 bg-black/30 z-[99] backdrop-blur-[4px]"
-      :class="{ '!block z-[150]': mobileOpen }"
+      class="hidden fixed inset-0 bg-black/30 z-[150] backdrop-blur-[4px]"
+      :class="{ '!block': mobileOpen }"
       @click="mobileOpen = false"
     />
 
@@ -23,8 +32,36 @@
       @navigate="mobileOpen = false"
     />
 
+    <!-- Mobile Bottom Nav -->
+    <nav class="hidden max-md:flex fixed bottom-0 left-0 right-0 h-16 bg-[var(--color-surface-secondary)]/90 backdrop-blur-lg border-t border-[var(--color-border)] z-[200] items-center justify-around px-2">
+      <router-link to="/" class="flex flex-col items-center gap-1 text-[var(--color-text-secondary)] no-underline px-3 py-1" :class="{ 'text-[var(--color-accent)]!': $route.name === 'dashboard' }">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+        <span class="text-[10px] font-bold">Início</span>
+      </router-link>
+      <router-link to="/transacoes" class="flex flex-col items-center gap-1 text-[var(--color-text-secondary)] no-underline px-3 py-1" :class="{ 'text-[var(--color-accent)]!': $route.name === 'transactions' }">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="14" x2="21" y2="3"/><polyline points="8 21 3 21 3 16"/><line x1="20" y1="10" x2="3" y2="21"/></svg>
+        <span class="text-[10px] font-bold">Transações</span>
+      </router-link>
+      <div class="relative -top-4">
+        <button 
+          class="w-12 h-12 rounded-full bg-[var(--color-accent)] text-white shadow-lg flex items-center justify-center cursor-pointer hover:scale-105 transition-all border-none"
+          @click="openQuickAdd"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        </button>
+      </div>
+      <router-link to="/cartoes" class="flex flex-col items-center gap-1 text-[var(--color-text-secondary)] no-underline px-3 py-1" :class="{ 'text-[var(--color-accent)]!': $route.name === 'cards' }">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        <span class="text-[10px] font-bold">Cartões</span>
+      </router-link>
+      <button class="flex flex-col items-center gap-1 text-[var(--color-text-secondary)] bg-transparent border-none px-3 py-1" @click="mobileOpen = true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></button>
+        <span class="text-[10px] font-bold">Mais</span>
+      </button>
+    </nav>
+
       <!-- Main content -->
-      <main class="flex-1 min-h-screen max-md:ml-0 max-md:pt-14 flex flex-col relative transition-all duration-300" :style="{ marginLeft: mobileOpen ? '0' : (desktopCollapsed ? '72px' : 'var(--sidebar-width)') }">
+      <main class="flex-1 min-h-screen max-md:ml-0 max-md:pt-14 max-md:pb-16 flex flex-col relative transition-all duration-300" :style="{ marginLeft: mobileOpen ? '0' : (desktopCollapsed ? '72px' : 'var(--sidebar-width)') }">
         <!-- Desktop Header -->
         <header class="h-16 bg-[var(--color-surface-secondary)] border-b border-[var(--color-border)] flex items-center justify-between px-6 shrink-0 max-md:hidden sticky top-0 z-[50]">
           <div class="flex items-center gap-1.5 text-[var(--color-text-primary)]">
@@ -83,9 +120,9 @@
         </router-view>
       </div>
 
-      <!-- Quick Action FAB -->
+      <!-- Quick Action FAB (Desktop only) -->
       <button 
-        class="fixed bottom-8 right-8 w-14 h-14 rounded-full bg-[var(--color-accent)] text-white shadow-lg flex items-center justify-center cursor-pointer hover:scale-105 transition-all duration-500 z-[150]"
+        class="fixed bottom-8 right-8 w-14 h-14 rounded-full bg-[var(--color-accent)] text-white shadow-lg flex items-center justify-center cursor-pointer hover:scale-105 transition-all duration-500 z-[150] max-md:hidden"
         :class="{ 'opacity-25 hover:opacity-100': footerVisible }"
         @click="openQuickAdd"
       >

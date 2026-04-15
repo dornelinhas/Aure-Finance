@@ -1,5 +1,5 @@
 <template>
-  <nav class="bg-[var(--color-surface-secondary)] border-r border-[var(--color-border)] fixed top-0 left-0 bottom-0 flex flex-col z-[100] max-md:-translate-x-full max-md:transition-transform max-md:duration-250 max-md:z-[200] font-[var(--font-sans)] transition-all duration-300" :style="{ width: collapsed ? '72px' : 'var(--sidebar-width)' }">
+  <nav class="bg-[var(--color-surface-secondary)] border-r border-[var(--color-border)] fixed top-0 left-0 bottom-0 flex flex-col z-[100] max-md:-translate-x-full max-md:transition-transform max-md:duration-300 max-md:z-[250] font-[var(--font-sans)] transition-all duration-300 shadow-2xl md:shadow-none" :style="{ width: collapsed ? '72px' : 'var(--sidebar-width)' }">
     <div class="px-5 py-5 flex items-center justify-between gap-2 overflow-hidden">
       <div class="flex items-center gap-2">
         <div class="w-8 h-8 rounded-lg bg-[var(--color-accent)] flex items-center justify-center shadow-sm shrink-0 transition-transform duration-500 hover:rotate-12">
@@ -7,7 +7,7 @@
             <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
           </svg>
         </div>
-        <h1 v-if="!collapsed" class="text-[22px] font-medium text-[var(--color-text-primary)] tracking-tight whitespace-nowrap">Aurea Finance</h1>
+        <h1 v-if="!collapsed" class="text-[20px] font-bold text-[var(--color-text-primary)] tracking-tight whitespace-nowrap">Aurea Finance</h1>
       </div>
       
       <!-- Close button (Mobile only) -->

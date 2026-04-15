@@ -1,9 +1,9 @@
 <template>
   <div class="h-full flex flex-col bg-[var(--color-bg)] overflow-auto font-[var(--font-sans)]">
-    <div class="px-6 py-6 pb-12 w-full max-w-[1200px] mx-auto">
+    <div class="px-4 sm:px-6 py-4 sm:py-6 pb-20 w-full max-w-[1200px] mx-auto">
       
       <!-- Insights Row -->
-      <div v-if="insights.length > 0" class="flex flex-col gap-4 mb-6 anim-section">
+      <div v-if="insights.length > 0" class="flex flex-col gap-3 sm:gap-4 mb-4 sm:mb-6 anim-section">
         <InsightCard 
           v-for="insight in insights" 
           :key="insight.id" 
@@ -13,12 +13,12 @@
       </div>
 
       <!-- Top Overview Row -->
-      <div class="mb-5">
+      <div class="mb-4 sm:mb-5">
         <DashboardHero @open-salary="openSalaryModal" />
       </div>
 
       <!-- Forecast Section -->
-      <div class="mb-5">
+      <div class="mb-4 sm:mb-5">
         <DashboardForecast />
       </div>
 
@@ -29,20 +29,20 @@
       <DashboardAlerts />
 
       <!-- Bottom Row: Health & Savings -->
-      <div class="grid grid-cols-2 gap-5 max-md:grid-cols-1 anim-section delay-4">
-        <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl p-6 shadow-sm flex flex-col items-center justify-center">
-          <h3 class="text-[11px] font-bold text-[var(--color-text-secondary)] uppercase tracking-widest mb-4">Saúde Financeira</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 anim-section delay-4">
+        <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl p-5 sm:p-6 shadow-sm flex flex-col items-center justify-center">
+          <h3 class="text-[10px] sm:text-[11px] font-bold text-[var(--color-text-secondary)] uppercase tracking-widest mb-3 sm:mb-4">Saúde Financeira</h3>
           <HealthScore :score="healthScore" />
         </div>
 
-        <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+        <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl p-5 sm:p-6 shadow-sm flex flex-col justify-between">
           <div>
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="text-[11px] font-bold text-[var(--color-text-secondary)] uppercase tracking-widest">{{ store.savingsGoal.name || 'Meta de Poupança' }}</h3>
+            <div class="flex items-center justify-between mb-3 sm:mb-4">
+              <h3 class="text-[10px] sm:text-[11px] font-bold text-[var(--color-text-secondary)] uppercase tracking-widest">{{ store.savingsGoal.name || 'Meta de Poupança' }}</h3>
               <button class="text-[12px] font-semibold text-[var(--color-accent)] bg-transparent border-none cursor-pointer hover:underline" @click="openGoalModal">Editar</button>
             </div>
-            <div class="text-[28px] font-extrabold tracking-tight leading-none mb-1" :style="{ color: goalBarColor }">{{ fmt(store.savingsGoal.current_amount) }}</div>
-            <p class="text-[11px] text-[var(--color-text-tertiary)] font-semibold mb-6">de {{ fmt(store.savingsGoal.target) }}</p>
+            <div class="text-[24px] sm:text-[28px] font-extrabold tracking-tight leading-none mb-1" :style="{ color: goalBarColor }">{{ fmt(store.savingsGoal.current_amount) }}</div>
+            <p class="text-[10px] sm:text-[11px] text-[var(--color-text-tertiary)] font-semibold mb-4 sm:mb-6">de {{ fmt(store.savingsGoal.target) }}</p>
           </div>
           <ProgressBar :percent="goalPct" :color="goalBarColor" suffix="concluído" />
         </div>
