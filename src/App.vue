@@ -68,8 +68,8 @@
       <!-- Main content -->
       <main 
         class="flex-1 min-h-screen flex flex-col relative transition-all duration-300 max-w-full overflow-x-hidden" 
-        :class="{ 'max-md:pt-14 max-md:pb-16': true }"
-        :style="{ marginLeft: mobileOpen ? '0' : (desktopCollapsed ? '72px' : 'var(--sidebar-width)') }"
+        :class="{ 'max-md:pt-14 max-md:pb-16 max-md:!ml-0': true }"
+        :style="{ marginLeft: desktopCollapsed ? '72px' : 'var(--sidebar-width)' }"
       >
         <!-- Desktop Header -->
         <header class="h-16 bg-[var(--color-surface-secondary)] border-b border-[var(--color-border)] flex items-center justify-between px-6 shrink-0 max-md:hidden sticky top-0 z-[50]">
