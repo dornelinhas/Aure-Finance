@@ -1,7 +1,7 @@
 <template>
   <div class="flex min-h-screen bg-[var(--color-bg)] font-[var(--font-sans)]">
     <!-- Mobile header -->
-    <div class="hidden max-md:flex fixed top-0 left-0 right-0 h-14 bg-[var(--color-surface-secondary)]/80 backdrop-blur-md border-b border-[var(--color-border)] z-[99] items-center px-4">
+    <div class="hidden max-md:flex fixed top-0 left-0 right-0 h-14 bg-[var(--color-surface-secondary)] border-b border-[var(--color-border)] z-[250] items-center px-4">
       <div class="w-10 flex items-center justify-start">
         <div class="w-7 h-7 rounded-lg bg-[var(--color-accent)] flex items-center justify-center shadow-sm shrink-0">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
@@ -24,14 +24,15 @@
 
     <!-- Sidebar backdrop (mobile) -->
     <div
-      class="hidden fixed inset-0 bg-black/30 z-[150] backdrop-blur-[4px]"
-      :class="{ '!block': mobileOpen }"
+      v-if="mobileOpen"
+      class="fixed inset-0 bg-black/60 z-[300] backdrop-blur-[4px] md:hidden"
       @click="mobileOpen = false"
     />
 
     <!-- Sidebar -->
     <AppSidebar
-      :class="{ 'translate-x-0!': mobileOpen, 'w-[72px]!': desktopCollapsed }"
+      class="max-md:!fixed max-md:!left-0 max-md:!top-0 max-md:!bottom-0 max-md:!z-[400] max-md:transition-transform max-md:duration-300"
+      :class="{ 'max-md:translate-x-0': mobileOpen, 'max-md:-translate-x-full': !mobileOpen, 'w-[72px]!': desktopCollapsed }"
       :collapsed="desktopCollapsed"
       @navigate="mobileOpen = false"
     />
@@ -44,7 +45,7 @@
       </router-link>
       <router-link to="/transacoes" class="flex flex-col items-center gap-1 text-[var(--color-text-secondary)] no-underline px-3 py-1" :class="{ 'text-[var(--color-accent)]!': $route.name === 'transactions' }">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="14" x2="21" y2="3"/><polyline points="8 21 3 21 3 16"/><line x1="20" y1="10" x2="3" y2="21"/></svg>
-        <span class="text-[10px] font-bold">Transações</span>
+        <span class="text-[10px] font-bold">Extrato</span>
       </router-link>
       <div class="relative -top-4">
         <button 
@@ -58,14 +59,18 @@
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
         <span class="text-[10px] font-bold">Cartões</span>
       </router-link>
-      <button class="flex flex-col items-center gap-1 text-[var(--color-text-secondary)] bg-transparent border-none px-3 py-1" @click="mobileOpen = true">
+      <button class="flex flex-col items-center gap-1 text-[var(--color-text-secondary)] bg-transparent border-none px-3 py-1 cursor-pointer" @click="mobileOpen = true">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-        <span class="text-[10px] font-bold">Mais</span>
+        <span class="text-[10px] font-bold">Menu</span>
       </button>
     </nav>
 
       <!-- Main content -->
-      <main class="flex-1 min-h-screen max-md:ml-0 max-md:pt-14 max-md:pb-16 flex flex-col relative transition-all duration-300" :style="{ marginLeft: mobileOpen ? '0' : (desktopCollapsed ? '72px' : 'var(--sidebar-width)') }">
+      <main 
+        class="flex-1 min-h-screen flex flex-col relative transition-all duration-300 max-w-full overflow-x-hidden" 
+        :class="{ 'max-md:pt-14 max-md:pb-16': true }"
+        :style="{ marginLeft: mobileOpen ? '0' : (desktopCollapsed ? '72px' : 'var(--sidebar-width)') }"
+      >
         <!-- Desktop Header -->
         <header class="h-16 bg-[var(--color-surface-secondary)] border-b border-[var(--color-border)] flex items-center justify-between px-6 shrink-0 max-md:hidden sticky top-0 z-[50]">
           <div class="flex items-center gap-1.5 text-[var(--color-text-primary)]">

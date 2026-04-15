@@ -57,16 +57,33 @@
 
 @media (max-width: 768px) {
   :root {
-    --sidebar-width: 0px;
+    --sidebar-width: 0px !important;
   }
   
-  .px-8 { padding-left: 1rem !important; padding-right: 1rem !important; }
-  .px-6 { padding-left: 1rem !important; padding-right: 1rem !important; }
-  .p-8 { padding: 1.25rem !important; }
-  .p-6 { padding: 1rem !important; }
+  body {
+    overflow-x: hidden !important;
+    width: 100% !important;
+    position: fixed; /* Prevent bouncy scroll on some mobile browsers */
+    height: 100%;
+  }
+
+  #app {
+    width: 100vw !important;
+    overflow-x: hidden !important;
+  }
+
+  .px-8, .px-6 { padding-left: 1.25rem !important; padding-right: 1.25rem !important; }
+  .p-8, .p-6 { padding: 1.25rem !important; }
   
-  h1 { font-size: 1.5rem !important; }
+  h1 { font-size: 1.5rem !important; line-height: 1.2 !important; }
   h2 { font-size: 1.25rem !important; }
+
+  /* Fix for cards and containers that might be too wide */
+  .w-full {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
 }
 
 /* Prevent horizontal scroll on mobile */
@@ -74,6 +91,8 @@ html, body {
   overflow-x: hidden;
   position: relative;
   width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 /* ── Dark Mode ───────────────────────────────────────────────── */
