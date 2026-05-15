@@ -12,7 +12,8 @@ import {
   getSavingsGoal, updateSavingsGoal,
   getSettings, updateSettings,
   processSubscriptionsCron,
-  bulkUpdatePayment
+  bulkUpdatePayment,
+  resetDatabase
 } from './database.js';
 
 const app = express();
@@ -212,6 +213,12 @@ app.get('/api/settings', asyncHandler(async (req, res) => {
 
 app.put('/api/settings', asyncHandler(async (req, res) => {
   res.json(await updateSettings(req.body));
+}));
+
+/* ── Reset ── */
+app.post('/api/reset', asyncHandler(async (req, res) => {
+  await resetDatabase();
+  res.json({ message: 'Database reset successfully' });
 }));
 
 // --- Cron Job (Processamento de Assinaturas) ---

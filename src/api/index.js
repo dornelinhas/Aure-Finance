@@ -63,4 +63,7 @@ export const api = {
   /* Settings */
   getSettings:        ()          => request('/settings'),
   updateSettings:     (data)      => request('/settings', { method: 'PUT', body: data }),
+
+  /* System */
+  resetDatabase:      ()          => request('/reset', { method: 'POST' }),
 }

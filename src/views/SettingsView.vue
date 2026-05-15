@@ -118,6 +118,23 @@
         </div>
       </div>
 
+      <!-- Data Management -->
+      <div class="bg-[var(--color-surface)] border border-red-500/20 rounded-xl p-5 shadow-[var(--shadow-sm)] mb-6">
+        <p class="text-[11px] font-bold uppercase tracking-wider text-red-500 mb-2">Zona de Perigo</p>
+        <div class="flex items-center justify-between gap-4 flex-wrap">
+          <div>
+            <p class="text-sm font-bold text-[var(--color-text-primary)]">Zerar todos os dados</p>
+            <p class="text-xs text-[var(--color-text-secondary)] mt-1">Isso apagará todas as transações, cartões, categorias e assinaturas. Esta ação não pode ser desfeita.</p>
+          </div>
+          <button 
+            @click="handleFullReset"
+            class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold cursor-pointer transition-all duration-150 border-none bg-red-500 text-white hover:bg-red-600"
+          >
+            Zerar e Recomeçar
+          </button>
+        </div>
+      </div>
+
       <!-- Component Demo -->
       <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl p-5 shadow-[var(--shadow-sm)]">
         <p class="text-[11px] font-bold uppercase tracking-wider text-[var(--color-text-secondary)] mb-2">Demonstração dos Componentes</p>
@@ -147,10 +164,15 @@
 import { ref, computed } from 'vue'
 import { useDesignSystem } from '../composables/useDesignSystem.js'
 import { useTheme } from '../composables/useTheme.js'
+import { useFinanceStore } from '../stores/finance.js'
+import { useNotifications } from '../composables/useNotifications.js'
+import { api } from '../api/index.js'
 import ColorRow from '../components/ColorRow.vue'
 
 const { colors, darkColors, updateColor, applyPreset, resetColors, PRESETS } = useDesignSystem()
 const { isDark } = useTheme()
+const financeStore = useFinanceStore()
+const { notify } = useNotifications()
 
 const activeTab = ref(isDark() ? 'dark' : 'light')
 
@@ -207,6 +229,26 @@ const accentColors = [
 function resetAll() {
   if (confirm('Restaurar todas as cores para o padrão?')) {
     resetColors()
+  }
+}
+
+async function handleFullReset() {
+  const confirmed = confirm('ATENÇÃO: Isso apagará TODOS os seus dados financeiros (transações, cartões, categorias, etc) e restaurará os padrões de fábrica. Tem certeza absoluta?')
+  
+  if (confirmed) {
+    const doubleCheck = confirm('Última chance! Confirma que deseja APAGAR TUDO?')
+    if (!doubleCheck) return
+
+    try {
+      await api.resetDatabase()
+      await financeStore.fetchData()
+      notify('Sistema resetado com sucesso!', 'success')
+      // Redirecionar para o dashboard ou recarregar para garantir estado limpo
+      window.location.reload()
+    } catch (err) {
+      console.error('Erro ao resetar banco:', err)
+      notify('Erro ao resetar dados.', 'error')
+    }
   }
 }
 </script>

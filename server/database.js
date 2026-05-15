@@ -448,4 +448,54 @@ export async function deleteGoal(id) {
   return await db.run('DELETE FROM goals WHERE id = ?', id);
 }
 
+/* ── Reset Data ────────────────────────────────────────────────── */
+
+export async function resetDatabase() {
+  await db.exec('BEGIN TRANSACTION');
+  try {
+    await db.run('DELETE FROM transactions');
+    await db.run('DELETE FROM categories');
+    await db.run('DELETE FROM subscriptions');
+    await db.run('DELETE FROM stock');
+    await db.run('DELETE FROM shopping_lists');
+    await db.run('DELETE FROM goals');
+    await db.run('DELETE FROM credit_cards');
+    
+    // Reset specific tables to defaults
+    await db.run('DELETE FROM savings_goal');
+    await db.run('INSERT INTO savings_goal (id, name, target, current_amount) VALUES (1, "Reserva de Emergência", 15000, 0)');
+    
+    await db.run('DELETE FROM settings');
+    await db.run('INSERT INTO settings (id, monthly_salary, credit_card_due_day, initial_balance) VALUES (1, 0, 10, 0)');
+
+    // Add default categories
+    const defaultCategories = [
+      { id: genId(), name: "Salário", type: "income", budget_limit: 0, color: "#34C759" },
+      { id: genId(), name: "Freelance", type: "income", budget_limit: 0, color: "#5AC8FA" },
+      { id: genId(), name: "Investimento", type: "income", budget_limit: 0, color: "#5856D6" },
+      { id: genId(), name: "Outros", type: "income", budget_limit: 0, color: "#8E8E93" },
+      { id: genId(), name: "Moradia", type: "expense", budget_limit: 2000, color: "#AF52DE" },
+      { id: genId(), name: "Alimentação", type: "expense", budget_limit: 800, color: "#FF9500" },
+      { id: genId(), name: "Transporte", type: "expense", budget_limit: 400, color: "#FF3B30" },
+      { id: genId(), name: "Saúde", type: "expense", budget_limit: 300, color: "#FF2D55" },
+      { id: genId(), name: "Lazer", type: "expense", budget_limit: 500, color: "#FFCC00" },
+      { id: genId(), name: "Educação", type: "expense", budget_limit: 600, color: "#007AFF" },
+      { id: genId(), name: "Compras", type: "expense", budget_limit: 500, color: "#FF9500" },
+      { id: genId(), name: "Assinaturas", type: "expense", budget_limit: 200, color: "#5AC8FA" }
+    ];
+
+    for (const cat of defaultCategories) {
+      await db.run(
+        'INSERT INTO categories (id, name, type, budget_limit, color) VALUES (?, ?, ?, ?, ?)',
+        cat.id, cat.name, cat.type, cat.budget_limit, cat.color
+      );
+    }
+
+    await db.exec('COMMIT');
+  } catch (error) {
+    await db.exec('ROLLBACK');
+    throw error;
+  }
+}
+
 export default db;
