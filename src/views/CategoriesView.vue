@@ -142,7 +142,7 @@
             </div>
 
             <!-- Income Data -->
-            <div v-if="cat.budget_limit > 0" class="mt-2">
+            <div class="mt-2">
               <div class="flex justify-between items-end mb-2.5">
                 <div>
                   <p class="text-[24px] font-light tracking-tight text-[var(--color-text-primary)] leading-none mb-1">{{ fmt(spent[cat.name] || 0) }}</p>
@@ -152,21 +152,19 @@
                   <span v-if="isIncomeTargetMet(cat)" class="inline-flex items-center gap-1 text-[12px] font-bold text-[var(--color-income)] bg-[var(--color-income-bg)] px-2 py-0.5 rounded-md">
                     Meta Batida!
                   </span>
-                  <span v-else class="text-[12px] font-bold text-[var(--color-text-secondary)]">
+                  <span v-else-if="cat.budget_limit > 0" class="text-[12px] font-bold text-[var(--color-text-secondary)]">
                     Faltam {{ fmt(cat.budget_limit - (spent[cat.name] || 0)) }}
+                  </span>
+                  <span v-else class="text-[10px] font-bold text-[var(--color-text-tertiary)] uppercase">
+                    Sem valor definido
                   </span>
                 </div>
               </div>
               <div class="h-2 w-full bg-[var(--color-surface-secondary)] rounded-full overflow-hidden flex">
                 <div class="h-full transition-all duration-500 rounded-full" 
-                     :style="{ width: getPct(cat) + '%', backgroundColor: (spent[cat.name] || 0) >= cat.budget_limit ? 'var(--color-income)' : cat.color }">
+                     :style="{ width: (cat.budget_limit > 0 ? getPct(cat) : 0) + '%', backgroundColor: isIncomeTargetMet(cat) ? 'var(--color-income)' : cat.color }">
                 </div>
               </div>
-            </div>
-            
-            <div v-else class="mt-2">
-              <p class="text-[24px] font-light tracking-tight text-[var(--color-text-primary)] leading-none mb-1">{{ fmt(spent[cat.name] || 0) }}</p>
-              <p class="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-wider">Recebido no mês</p>
             </div>
           </div>
         </div>

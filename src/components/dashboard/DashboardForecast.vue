@@ -64,7 +64,7 @@
         </div>
       </div>
       <div v-else class="grid grid-cols-2 gap-x-6 gap-y-2 max-sm:grid-cols-1">
-        <div v-for="item in forecastItems.slice(0, 8)" :key="item.name" class="flex items-center justify-between py-1.5 border-b border-[var(--color-separator)]">
+        <div v-for="item in forecastItems.slice(0, 10)" :key="item.name" class="flex items-center justify-between py-1.5 border-b border-[var(--color-separator)]">
           <div class="flex items-center gap-2">
             <span class="w-1.5 h-1.5 rounded-full" :class="item.type === 'income' ? 'bg-[var(--color-income)]' : (item.type === 'sub' ? 'bg-[var(--color-accent)]' : 'bg-[var(--color-expense)]')"></span>
             <span class="text-[12px] font-medium text-[var(--color-text-secondary)]">{{ item.name }}</span>
@@ -110,7 +110,7 @@ const nextMonthForecast = computed(() => {
   const installmentsAmount = store.transactions
     .filter(t => {
       const d = new Date(t.date + 'T12:00:00');
-      return d.getMonth() === nm && d.getFullYear() === ny && t.type === 'expense';
+      return d.getMonth() === nm && d.getFullYear() === ny && t.type === 'expense' && !!t.is_personal;
     })
     .reduce((s, t) => s + t.amount, 0);
   

@@ -194,11 +194,7 @@
                         <path d="M20 6L9 17l-5-5"></path>
                       </svg>
                     </button>
-                    <span v-else class="text-[var(--color-income)]">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M20 6L9 17l-5-5"></path>
-                      </svg>
-                    </span>
+                    <span v-else class="text-[var(--color-text-tertiary)] opacity-30">—</span>
                   </td>
                   <td class="px-4 py-3.5 text-sm border-b border-[var(--color-border)] align-middle text-right font-bold" :style="{ color: t.type === 'income' ? 'var(--color-income)' : 'var(--color-expense)' }">
                     {{ t.type === 'income' ? '+' : '-' }} {{ fmt(t.amount) }}
@@ -218,7 +214,7 @@
               <div class="flex justify-between items-start">
                 <div class="flex items-center gap-3">
                   <div class="w-10 h-10 rounded-full flex items-center justify-center text-white shrink-0" :class="t.type === 'income' ? 'bg-[var(--color-income)]' : 'bg-[var(--color-expense)]'">
-                    <svg v-if="t.type === 'income'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+                    <svg v-if="t.type === 'income'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     <svg v-else width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
                   </div>
                   <div>
