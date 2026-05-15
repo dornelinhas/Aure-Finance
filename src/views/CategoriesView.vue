@@ -149,7 +149,7 @@
                   <p class="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-wider">Recebido no mês</p>
                 </div>
                 <div class="text-right">
-                  <span v-if="(spent[cat.name] || 0) >= cat.budget_limit" class="inline-flex items-center gap-1 text-[12px] font-bold text-[var(--color-income)] bg-[var(--color-income-bg)] px-2 py-0.5 rounded-md">
+                  <span v-if="isIncomeTargetMet(cat)" class="inline-flex items-center gap-1 text-[12px] font-bold text-[var(--color-income)] bg-[var(--color-income-bg)] px-2 py-0.5 rounded-md">
                     Meta Batida!
                   </span>
                   <span v-else class="text-[12px] font-bold text-[var(--color-text-secondary)]">
@@ -295,12 +295,17 @@ function getPct(cat) {
 }
 
 function isOver(cat) {
+  if (cat.type === 'income') return false // Income doesn't "exceed" budget in a negative way
   return cat.budget_limit > 0 && getPct(cat) >= 100
+}
+
+function isIncomeTargetMet(cat) {
+  return cat.type === 'income' && cat.budget_limit > 0 && (spent.value[cat.name] || 0) >= cat.budget_limit
 }
 
 function isWarn(cat) {
   const pct = getPct(cat)
-  return cat.budget_limit > 0 && pct >= 70 && pct < 100
+  return cat.type === 'expense' && cat.budget_limit > 0 && pct >= 70 && pct < 100
 }
 
 function openModal(cat = null) {

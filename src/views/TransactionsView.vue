@@ -318,7 +318,7 @@
         </div>
         <input type="checkbox" v-model="form.is_paid" class="w-6 h-6 rounded border-[var(--color-border)] text-[var(--color-accent)] focus:ring-[var(--color-accent)] cursor-pointer">
       </div>
-      <div v-if="form.type === 'expense' && form.category !== 'Salário'" class="mb-4 flex items-center justify-between p-4 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-secondary)]/30">
+      <div v-if="form.type === 'expense' && !((form.category || '').toLowerCase().includes('salário') || (form.category || '').toLowerCase().includes('salario'))" class="mb-4 flex items-center justify-between p-4 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-secondary)]/30">
         <div>
           <p class="text-sm font-bold text-[var(--color-text-primary)]">Essa despesa é minha?</p>
           <p class="text-[11px] text-[var(--color-text-secondary)] font-medium">Se desmarcado, não será descontado do seu saldo pessoal.</p>
@@ -326,7 +326,7 @@
         <input type="checkbox" v-model="form.is_personal" class="w-6 h-6 rounded border-[var(--color-border)] text-[var(--color-accent)] focus:ring-[var(--color-accent)] cursor-pointer">
       </div>
       <!-- Debt toggle (only for expenses) -->
-      <div v-if="form.type === 'expense' && form.category !== 'Salário'" class="mb-4 flex items-center justify-between p-4 rounded-xl border border-[var(--color-border)] bg-[var(--color-expense-bg)]/20">
+      <div v-if="form.type === 'expense' && !((form.category || '').toLowerCase().includes('salário') || (form.category || '').toLowerCase().includes('salario'))" class="mb-4 flex items-center justify-between p-4 rounded-xl border border-[var(--color-border)] bg-[var(--color-expense-bg)]/20">
         <div>
           <p class="text-sm font-bold text-[var(--color-expense)]">Eu devo esse valor a alguém?</p>
           <p class="text-[11px] text-[var(--color-text-secondary)] font-medium">Marque como dívida para lembrar de pagar depois.</p>
@@ -350,6 +350,7 @@ import AppModal from '../components/AppModal.vue'
 
 const route = useRoute()
 const { exportToExcel } = useExport()
+const { emit } = useEventBus()
 
 const fmt = v => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v || 0)
 const fmtDate = d => d ? new Date(d + 'T12:00:00').toLocaleDateString('pt-BR') : '—'
@@ -396,9 +397,11 @@ const form = ref(emptyForm())
 
 // Watch category to enforce income type and personal status if it's Salary
 watch(() => form.value.category, (newCat) => {
-  if (newCat === 'Salário') {
+  const isSalary = (newCat || '').toLowerCase().includes('salário') || (newCat || '').toLowerCase().includes('salario')
+  if (isSalary) {
     form.value.type = 'income'
     form.value.is_personal = true
+    form.value.is_paid = true
   }
 })
 
@@ -406,8 +409,10 @@ watch(() => form.value.category, (newCat) => {
 watch(() => form.value.type, (newType) => {
   if (newType === 'income') {
     form.value.is_personal = true
+    form.value.is_paid = true
   }
-  if (newType === 'expense' && form.value.category === 'Salário') {
+  const isSalary = (form.value.category || '').toLowerCase().includes('salário') || (form.value.category || '').toLowerCase().includes('salario')
+  if (newType === 'expense' && isSalary) {
     form.value.category = ''
   }
 })
@@ -629,6 +634,7 @@ async function save() {
           transactions.value = [created, ...transactions.value]
       }
     }
+    emit('transaction-added')
     closeModal()
   } catch (err) {
     console.error(err)
