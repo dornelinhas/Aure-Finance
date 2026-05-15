@@ -493,9 +493,11 @@ const filtered = computed(() => {
   let list = [...transactions.value]
   
   if (viewTab.value === 'debts') {
-    list = list.filter(t => !t.is_personal || !!t.is_debt)
+    // Show third-party expenses or manual debts
+    list = list.filter(t => (t.type === 'expense' && !t.is_personal) || !!t.is_debt)
   } else {
-    list = list.filter(t => !!t.is_personal && !t.is_debt)
+    // Show personal transactions OR any income (income is always personal in context)
+    list = list.filter(t => t.type === 'income' || (!!t.is_personal && !t.is_debt))
   }
 
   if (filter.value !== 'all') list = list.filter(t => t.type === filter.value)
