@@ -184,6 +184,7 @@
                   </td>
                   <td class="px-4 py-3.5 text-sm border-b border-[var(--color-border)] align-middle text-center">
                     <button 
+                      v-if="t.type === 'expense'"
                       class="inline-flex items-center justify-center p-1.5 rounded-lg border-none cursor-pointer transition-all duration-200"
                       :class="t.is_paid ? 'bg-[var(--color-income-bg)] text-[var(--color-income)]' : 'bg-[var(--color-surface-secondary)] text-[var(--color-text-tertiary)] hover:bg-[var(--color-hover)]'"
                       @click="togglePaid(t)"
@@ -193,6 +194,11 @@
                         <path d="M20 6L9 17l-5-5"></path>
                       </svg>
                     </button>
+                    <span v-else class="text-[var(--color-income)]">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 6L9 17l-5-5"></path>
+                      </svg>
+                    </span>
                   </td>
                   <td class="px-4 py-3.5 text-sm border-b border-[var(--color-border)] align-middle text-right font-bold" :style="{ color: t.type === 'income' ? 'var(--color-income)' : 'var(--color-expense)' }">
                     {{ t.type === 'income' ? '+' : '-' }} {{ fmt(t.amount) }}
@@ -421,6 +427,10 @@ onMounted(async () => {
     openModal()
     form.value.type = route.query.catType || 'expense'
     form.value.category = route.query.catName
+    if (form.value.type === 'income') {
+      form.value.is_personal = true
+      form.value.is_paid = true
+    }
   }
 })
 
