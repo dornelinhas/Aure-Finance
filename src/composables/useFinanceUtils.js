@@ -26,7 +26,7 @@ export function useFinanceUtils() {
 
   // Cálculos Básicos
   const totalIncome = computed(() => 
-    monthTxns.value.filter(t => t.type === 'income' && t.is_personal).reduce((s, t) => s + t.amount, 0)
+    monthTxns.value.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0)
   );
 
   const totalExpense = computed(() => {

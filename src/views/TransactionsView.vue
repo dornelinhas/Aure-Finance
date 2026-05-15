@@ -372,18 +372,35 @@ const tempDateTo = ref('')
 const tempSelectedCategories = ref([])
 const tempSelectedAccounts = ref([])
 
-const emptyForm = () => ({ name: '', amount: '', category: '', date: new Date().toISOString().slice(0, 10), type: 'expense', account: 'Conta Corrente', is_paid: true, is_personal: true, is_debt: false, is_installment: false, installments_paid: 0, installments_remaining: 1 })
+const emptyForm = () => ({ 
+  name: '', 
+  amount: '', 
+  category: '', 
+  date: new Date().toISOString().slice(0, 10), 
+  type: 'expense', 
+  account: 'Conta Corrente', 
+  is_paid: true, 
+  is_personal: true, 
+  is_debt: false, 
+  is_installment: false, 
+  installments_paid: 0, 
+  installments_remaining: 1 
+})
 const form = ref(emptyForm())
 
-// Watch category to enforce income type if it's Salary
+// Watch category to enforce income type and personal status if it's Salary
 watch(() => form.value.category, (newCat) => {
   if (newCat === 'Salário') {
     form.value.type = 'income'
+    form.value.is_personal = true
   }
 })
 
-// Watch type to clear category if it's Salary but user switched to expense
+// Watch type to ensure income is always personal by default
 watch(() => form.value.type, (newType) => {
+  if (newType === 'income') {
+    form.value.is_personal = true
+  }
   if (newType === 'expense' && form.value.category === 'Salário') {
     form.value.category = ''
   }
