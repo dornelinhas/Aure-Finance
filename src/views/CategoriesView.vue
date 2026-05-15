@@ -93,9 +93,15 @@
 
       <!-- Receitas -->
       <div class="mb-5">
-        <div class="flex items-center gap-2 mb-4">
-          <div class="w-2 h-6 bg-[var(--color-income)] rounded-full"></div>
-          <h2 class="text-lg font-bold text-[var(--color-text-primary)]">Receitas</h2>
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-2">
+            <div class="w-2 h-6 bg-[var(--color-income)] rounded-full"></div>
+            <h2 class="text-lg font-bold text-[var(--color-text-primary)]">Receitas</h2>
+          </div>
+          <div class="bg-[var(--color-income-bg)] border border-[var(--color-income)]/20 px-4 py-2 rounded-xl flex items-center gap-3">
+             <span class="text-[10px] font-black uppercase tracking-widest text-[var(--color-income)]">Receita Mensal Base</span>
+             <span class="text-lg font-black text-[var(--color-income)]">{{ fmt(store.settings.monthly_salary) }}</span>
+          </div>
         </div>
 
         <div v-if="incomeCategories.length === 0" class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl p-8 shadow-sm text-center">
@@ -216,6 +222,7 @@ import { api } from '../api/index.js'
 import { useEventBus } from '../composables/useEventBus.js'
 import AppModal from '../components/AppModal.vue'
 
+const store = useFinanceStore()
 const router = useRouter()
 const { on } = useEventBus()
 
@@ -237,14 +244,10 @@ const emptyForm = () => ({ name: '', type: 'expense', budget_limit: 0, color: '#
 const form = ref(emptyForm())
 
 async function fetchData() {
-  const [cats, txns, subs] = await Promise.all([
-    api.getCategories(),
-    api.getTransactions(),
-    api.getSubscriptions()
-  ])
-  categories.value = cats
-  transactions.value = txns
-  subscriptions.value = subs
+  await store.fetchData()
+  categories.value = store.categories
+  transactions.value = store.transactions
+  subscriptions.value = store.subscriptions
 }
 
 onMounted(() => {
@@ -254,6 +257,10 @@ onMounted(() => {
 
 const incomeCategories = computed(() => categories.value.filter(c => c.type === 'income'))
 const expenseCategories = computed(() => categories.value.filter(c => c.type === 'expense'))
+
+const totalExpectedIncome = computed(() => {
+  return incomeCategories.value.reduce((sum, c) => sum + (c.budget_limit || 0), 0)
+})
 
 const monthTxns = computed(() =>
   transactions.value.filter(t => {
@@ -315,13 +322,21 @@ function closeModal() {
 async function save() {
   if (!form.value.name) return
   const data = { ...form.value, budget_limit: Number(form.value.budget_limit) || 0 }
+  let updatedOrCreated;
+  
   if (editing.value) {
-    const updated = await api.updateCategory(editing.value, data)
-    categories.value = categories.value.map(c => c.id === editing.value ? updated : c)
+    updatedOrCreated = await api.updateCategory(editing.value, data)
+    categories.value = categories.value.map(c => c.id === editing.value ? updatedOrCreated : c)
   } else {
-    const created = await api.createCategory(data)
-    categories.value = [...categories.value, created]
+    updatedOrCreated = await api.createCategory(data)
+    categories.value = [...categories.value, updatedOrCreated]
   }
+
+  // Sincronizar com a Receita Base se a categoria for "Salário"
+  if (updatedOrCreated.name === 'Salário' && updatedOrCreated.type === 'income') {
+    await store.updateSettings({ ...store.settings, monthly_salary: updatedOrCreated.budget_limit })
+  }
+
   closeModal()
 }
 
