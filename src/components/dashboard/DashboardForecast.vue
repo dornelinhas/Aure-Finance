@@ -8,13 +8,13 @@
       <span class="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-wider">Gastos comprometidos</span>
     </div>
 
-    <div class="grid grid-cols-4 gap-4 max-md:grid-cols-2 max-sm:grid-cols-1">
+    <div class="grid grid-cols-5 gap-4 max-md:grid-cols-2 max-sm:grid-cols-1">
       <div class="bg-[var(--color-surface-secondary)] rounded-xl p-5 border border-[var(--color-border)] anim-card">
-        <p class="text-[11px] font-bold text-[var(--color-text-tertiary)] uppercase tracking-wider mb-2">Total Previsto</p>
+        <p class="text-[11px] font-bold text-[var(--color-text-tertiary)] uppercase tracking-wider mb-2">Gastos Previstos</p>
         <div v-if="store.loading" class="py-1">
           <SkeletonLoader width="w-3/4" height="h-7" />
         </div>
-        <p v-else class="text-[28px] font-extrabold text-[var(--color-text-primary)] tracking-tight leading-none mb-1">{{ fmt(nextMonthForecast) }}</p>
+        <p v-else class="text-[24px] sm:text-[28px] font-extrabold text-[var(--color-text-primary)] tracking-tight leading-none mb-1">{{ fmt(nextMonthForecast) }}</p>
         <p class="text-[11px] font-medium text-[var(--color-text-secondary)]">Próximo mês</p>
       </div>
 
@@ -23,26 +23,35 @@
         <div v-if="store.loading" class="py-1">
           <SkeletonLoader width="w-1/2" height="h-7" />
         </div>
-        <p v-else class="text-[28px] font-extrabold text-[var(--color-text-primary)] tracking-tight leading-none mb-1">{{ fmt(subTotal) }}</p>
+        <p v-else class="text-[24px] sm:text-[28px] font-extrabold text-[var(--color-text-primary)] tracking-tight leading-none mb-1">{{ fmt(subTotal) }}</p>
         <p class="text-[11px] font-medium text-[var(--color-text-secondary)]">{{ store.loading ? 'Carregando...' : activeSubs.length + ' serviços ativos' }}</p>
       </div>
 
       <div class="bg-[var(--color-surface-secondary)] rounded-xl p-5 border border-[var(--color-border)]">
-        <p class="text-[11px] font-bold text-[var(--color-text-tertiary)] uppercase tracking-wider mb-2">Compras (Listas Ativas)</p>
+        <p class="text-[11px] font-bold text-[var(--color-text-tertiary)] uppercase tracking-wider mb-2">Compras Est.</p>
         <div v-if="store.loading" class="py-1">
           <SkeletonLoader width="w-2/3" height="h-7" />
         </div>
-        <p v-else class="text-[28px] font-extrabold text-[var(--color-text-primary)] tracking-tight leading-none mb-1">{{ fmt(shoppingForecastTotal) }}</p>
-        <p class="text-[11px] font-medium text-[var(--color-text-secondary)]">{{ store.loading ? 'Calculando...' : activeShoppingItemsCount + ' itens mapeados' }}</p>
+        <p v-else class="text-[24px] sm:text-[28px] font-extrabold text-[var(--color-text-primary)] tracking-tight leading-none mb-1">{{ fmt(shoppingForecastTotal) }}</p>
+        <p class="text-[11px] font-medium text-[var(--color-text-secondary)]">{{ store.loading ? 'Calculando...' : activeShoppingItemsCount + ' itens' }}</p>
+      </div>
+
+      <div class="bg-[var(--color-surface-secondary)] rounded-xl p-5 border border-[var(--color-border)]">
+        <p class="text-[11px] font-bold text-[var(--color-text-tertiary)] uppercase tracking-wider mb-2">Receita Prevista</p>
+        <div v-if="store.loading" class="py-1">
+          <SkeletonLoader width="w-1/2" height="h-7" />
+        </div>
+        <p v-else class="text-[24px] sm:text-[28px] font-extrabold text-[var(--color-income)] tracking-tight leading-none mb-1">{{ fmt(nextMonthIncome || store.settings.monthly_salary) }}</p>
+        <p class="text-[11px] font-medium text-[var(--color-text-secondary)]">{{ nextMonthIncome > 0 ? 'Baseado em lançamentos' : 'Baseado no salário base' }}</p>
       </div>
 
       <div class="bg-[var(--color-income-bg)] rounded-xl p-5 border border-[var(--color-income-bg)]">
-        <p class="text-[11px] font-bold text-[var(--color-income)] uppercase tracking-wider mb-2">Receita Livre Est.</p>
+        <p class="text-[11px] font-bold text-[var(--color-income)] uppercase tracking-wider mb-2">Receita Livre</p>
         <div v-if="store.loading" class="py-1">
           <SkeletonLoader width="w-3/4" height="h-7" class="bg-[var(--color-income)]! opacity-20" />
         </div>
-        <p v-else class="text-[28px] font-extrabold text-[var(--color-income)] tracking-tight leading-none mb-1">{{ fmt(Math.max(0, (nextMonthIncome || store.settings.monthly_salary) - nextMonthForecast)) }}</p>
-        <p class="text-[11px] font-medium text-[var(--color-income)]">Após compromissos</p>
+        <p v-else class="text-[24px] sm:text-[28px] font-extrabold text-[var(--color-income)] tracking-tight leading-none mb-1">{{ fmt(Math.max(0, (nextMonthIncome || store.settings.monthly_salary) - nextMonthForecast)) }}</p>
+        <p class="text-[11px] font-medium text-[var(--color-income)]">Sobra estimada</p>
       </div>
     </div>
 
@@ -75,7 +84,7 @@ import { useFinanceUtils } from '../../composables/useFinanceUtils.js';
 import SkeletonLoader from '../SkeletonLoader.vue';
 
 const store = useFinanceStore();
-const { fmt, MONTHS, currentMonth, currentYear } = useFinanceUtils();
+const { fmt, MONTHS, currentMonth, currentYear, nextMonthIncome } = useFinanceUtils();
 
 const nextMonthDate = new Date(currentYear, currentMonth + 1, 1);
 const nextMonthLabel = MONTHS[nextMonthDate.getMonth()] + ' ' + nextMonthDate.getFullYear();
@@ -93,17 +102,6 @@ const shoppingForecastTotal = computed(() => {
 const activeShoppingItemsCount = computed(() => {
   const activeListsIds = store.shoppingLists.filter(l => !!l.is_active).map(l => l.id);
   return store.stock.filter(s => s.quantity <= s.min_qty && (!s.list_id || activeListsIds.includes(s.list_id))).length;
-});
-
-const nextMonthIncome = computed(() => {
-  const nm = nextMonthDate.getMonth();
-  const ny = nextMonthDate.getFullYear();
-  return store.transactions
-    .filter(t => {
-      const d = new Date(t.date + 'T12:00:00');
-      return d.getMonth() === nm && d.getFullYear() === ny && t.type === 'income';
-    })
-    .reduce((s, t) => s + t.amount, 0);
 });
 
 const nextMonthForecast = computed(() => {

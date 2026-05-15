@@ -74,6 +74,17 @@ export function useFinanceUtils() {
     return base - totalExpense.value - cardExpense.value;
   });
 
+  const nextMonthIncome = computed(() => {
+    const nm = (currentMonth + 1) % 12;
+    const ny = currentMonth === 11 ? currentYear + 1 : currentYear;
+    return store.transactions
+      .filter(t => {
+        const d = new Date(t.date + 'T12:00:00');
+        return d.getMonth() === nm && d.getFullYear() === ny && t.type === 'income';
+      })
+      .reduce((s, t) => s + t.amount, 0);
+  });
+
   const savingsRate = computed(() => {
     const base = store.settings.monthly_salary || totalIncome.value || 1;
     const balance = (store.settings.initial_balance || 0) + totalIncome.value - totalExpense.value;
@@ -94,6 +105,7 @@ export function useFinanceUtils() {
     myDebts,
     availableBalance,
     freeIncome,
+    nextMonthIncome,
     savingsRate
   };
 }
