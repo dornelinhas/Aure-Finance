@@ -198,6 +198,13 @@
         </label>
         <input class="form-input" type="number" step="0.01" v-model.number="form.budget_limit" :placeholder="form.type === 'expense' ? '600' : '5000'" />
       </div>
+      <div class="mb-4 flex items-center justify-between p-4 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-secondary)]/30">
+        <div>
+          <p class="text-sm font-bold text-[var(--color-text-primary)]">Fixo / Sempre aparecer?</p>
+          <p class="text-[11px] text-[var(--color-text-secondary)] font-medium">Se marcado, este valor será sempre contado nas projeções futuras.</p>
+        </div>
+        <input type="checkbox" v-model="form.is_recurring" class="w-6 h-6 rounded border-[var(--color-border)] text-[var(--color-accent)] focus:ring-[var(--color-accent)] cursor-pointer">
+      </div>
       <div class="mb-4">
         <label class="block text-xs font-semibold text-[var(--color-text-secondary)] mb-1.5 uppercase tracking-wider">Cor de Identificação</label>
         <div class="flex items-center gap-3">
@@ -241,7 +248,7 @@ const subscriptions = ref([])
 const showModal = ref(false)
 const editing = ref(null)
 
-const emptyForm = () => ({ name: '', type: 'expense', budget_limit: 0, color: '#0066FF' })
+const emptyForm = () => ({ name: '', type: 'expense', budget_limit: 0, color: '#0066FF', is_recurring: false })
 const form = ref(emptyForm())
 
 async function fetchData() {
@@ -312,7 +319,7 @@ function isWarn(cat) {
 function openModal(cat = null) {
   if (cat) {
     editing.value = cat.id
-    form.value = { name: cat.name, type: cat.type, budget_limit: cat.budget_limit || 0, color: cat.color }
+    form.value = { name: cat.name, type: cat.type, budget_limit: cat.budget_limit || 0, color: cat.color, is_recurring: !!cat.is_recurring }
   } else {
     editing.value = null
     form.value = emptyForm()
@@ -338,9 +345,12 @@ async function save() {
     categories.value = [...categories.value, updatedOrCreated]
   }
 
-  // Sincronizar com a Receita Base se a categoria for "Salário"
-  if (updatedOrCreated.name === 'Salário' && updatedOrCreated.type === 'income') {
-    await store.updateSettings({ ...store.settings, monthly_salary: updatedOrCreated.budget_limit })
+  // Sincronizar com a Receita Base se a categoria for "Salário" ou se o usuário marcar como fixo
+  if (updatedOrCreated.type === 'income' && (updatedOrCreated.name === 'Salário' || updatedOrCreated.is_recurring)) {
+    // Se for Salário, sempre sincroniza com a base do sistema para compatibilidade
+    if (updatedOrCreated.name === 'Salário') {
+      await store.updateSettings({ ...store.settings, monthly_salary: updatedOrCreated.budget_limit })
+    }
   }
 
   closeModal()

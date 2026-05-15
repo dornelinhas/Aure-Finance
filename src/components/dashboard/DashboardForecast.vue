@@ -14,7 +14,7 @@
         <div v-if="store.loading" class="py-1">
           <SkeletonLoader width="w-3/4" height="h-7" />
         </div>
-        <p v-else class="text-[24px] sm:text-[28px] font-extrabold text-[var(--color-text-primary)] tracking-tight leading-none mb-1">{{ fmt(nextMonthForecast) }}</p>
+        <p v-else class="text-[24px] sm:text-[28px] font-extrabold text-[var(--color-text-primary)] tracking-tight leading-none mb-1">{{ fmt(nextMonthForecastTotal) }}</p>
         <p class="text-[11px] font-medium text-[var(--color-text-secondary)]">Próximo mês</p>
       </div>
 
@@ -41,8 +41,8 @@
         <div v-if="store.loading" class="py-1">
           <SkeletonLoader width="w-1/2" height="h-7" />
         </div>
-        <p v-else class="text-[24px] sm:text-[28px] font-extrabold text-[var(--color-income)] tracking-tight leading-none mb-1">{{ fmt(nextMonthIncome || store.settings.monthly_salary) }}</p>
-        <p class="text-[11px] font-medium text-[var(--color-text-secondary)]">{{ nextMonthIncome > 0 ? 'Baseado em lançamentos' : 'Baseado no salário base' }}</p>
+        <p v-else class="text-[24px] sm:text-[28px] font-extrabold text-[var(--color-income)] tracking-tight leading-none mb-1">{{ fmt(nextMonthIncomeTotal) }}</p>
+        <p class="text-[11px] font-medium text-[var(--color-text-secondary)]">{{ nextMonthIncomeTotal > 0 ? 'Baseado em registros' : 'Sem previsão' }}</p>
       </div>
 
       <div class="bg-[var(--color-income-bg)] rounded-xl p-5 border border-[var(--color-income-bg)]">
@@ -50,7 +50,7 @@
         <div v-if="store.loading" class="py-1">
           <SkeletonLoader width="w-3/4" height="h-7" class="bg-[var(--color-income)]! opacity-20" />
         </div>
-        <p v-else class="text-[24px] sm:text-[28px] font-extrabold text-[var(--color-income)] tracking-tight leading-none mb-1">{{ fmt(Math.max(0, (nextMonthIncome || store.settings.monthly_salary) - nextMonthForecast)) }}</p>
+        <p v-else class="text-[24px] sm:text-[28px] font-extrabold text-[var(--color-income)] tracking-tight leading-none mb-1">{{ fmt(Math.max(0, nextMonthIncomeTotal - nextMonthForecastTotal)) }}</p>
         <p class="text-[11px] font-medium text-[var(--color-income)]">Sobra estimada</p>
       </div>
     </div>
@@ -123,30 +123,64 @@ const forecastItems = computed(() => {
   const nm = nextMonthDate.getMonth();
   const ny = nextMonthDate.getFullYear();
 
-  // Add Income (Salário, etc)
-  store.transactions
+  // 1. Add Registered Income Transactions for next month
+  const registeredIncome = store.transactions
     .filter(t => {
       const d = new Date(t.date + 'T12:00:00');
       return d.getMonth() === nm && d.getFullYear() === ny && t.type === 'income';
-    })
-    .forEach(t => items.push({ name: t.name, amount: t.amount, type: 'income', label: 'Receita' }));
+    });
+  
+  registeredIncome.forEach(t => items.push({ name: t.name, amount: t.amount, type: 'income', label: 'Receita' }));
 
-  // If no income transactions but has base salary, show as projection
+  // 2. Add Recurring Income Categories that DON'T have a transaction yet
+  store.categories
+    .filter(c => c.type === 'income' && !!c.is_recurring && c.budget_limit > 0)
+    .forEach(c => {
+      const alreadyRegistered = registeredIncome.some(t => t.category === c.name);
+      if (!alreadyRegistered) {
+        items.push({ name: c.name, amount: c.budget_limit, type: 'income', label: 'Previsto' });
+      }
+    });
+
+  // Fallback for Salário if nothing else found
   if (items.filter(i => i.type === 'income').length === 0 && store.settings.monthly_salary > 0) {
-    items.push({ name: 'Projeção de Salário', amount: store.settings.monthly_salary, type: 'income', label: 'Estimativa' });
+    items.push({ name: 'Salário Base', amount: store.settings.monthly_salary, type: 'income', label: 'Estimativa' });
   }
 
-  // Add Subscriptions
+  // 3. Add Subscriptions
   activeSubs.value.forEach(s => items.push({ name: s.name, amount: s.amount, type: 'sub', label: 'Assinatura' }));
   
-  // Add Expense Transactions (Installments, etc)
-  store.transactions
+  // 4. Add Registered Expense Transactions (Installments, etc)
+  const registeredExpense = store.transactions
     .filter(t => {
       const d = new Date(t.date + 'T12:00:00');
-      return d.getMonth() === nm && d.getFullYear() === ny && t.type === 'expense';
-    })
-    .forEach(t => items.push({ name: t.name, amount: t.amount, type: 'installment', label: 'Despesa' }));
+      return d.getMonth() === nm && d.getFullYear() === ny && t.type === 'expense' && !!t.is_personal;
+    });
+  
+  registeredExpense.forEach(t => items.push({ name: t.name, amount: t.amount, type: 'installment', label: 'Despesa' }));
+
+  // 5. Add Recurring Expense Categories that DON'T have a transaction yet
+  store.categories
+    .filter(c => c.type === 'expense' && !!c.is_recurring && c.budget_limit > 0)
+    .forEach(c => {
+      const alreadyRegistered = registeredExpense.some(t => t.category === c.name);
+      if (!alreadyRegistered) {
+        items.push({ name: c.name, amount: c.budget_limit, type: 'installment', label: 'Orçamento' });
+      }
+    });
   
   return items.sort((a, b) => b.amount - a.amount);
+});
+
+const nextMonthIncomeTotal = computed(() => {
+  return forecastItems.value
+    .filter(i => i.type === 'income')
+    .reduce((sum, i) => sum + i.amount, 0);
+});
+
+const nextMonthForecastTotal = computed(() => {
+  return forecastItems.value
+    .filter(i => i.type !== 'income')
+    .reduce((sum, i) => sum + i.amount, 0);
 });
 </script>

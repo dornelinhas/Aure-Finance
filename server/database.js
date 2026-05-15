@@ -42,7 +42,8 @@ async function initDb() {
       name TEXT NOT NULL,
       type TEXT NOT NULL CHECK(type IN ('income', 'expense')),
       budget_limit REAL NOT NULL DEFAULT 0,
-      color TEXT NOT NULL DEFAULT '#007AFF'
+      color TEXT NOT NULL DEFAULT '#007AFF',
+      is_recurring INTEGER DEFAULT 0
     );
 
     CREATE TABLE IF NOT EXISTS subscriptions (
@@ -273,19 +274,19 @@ export async function getAllCategories() {
   return await db.all('SELECT * FROM categories ORDER BY type, name');
 }
 
-export async function createCategory({ name, type, budget_limit, color }) {
+export async function createCategory({ name, type, budget_limit, color, is_recurring }) {
   const id = genId();
   await db.run(
-    'INSERT INTO categories (id, name, type, budget_limit, color) VALUES (?, ?, ?, ?, ?)',
-    id, name, type, budget_limit || 0, color || '#007AFF'
+    'INSERT INTO categories (id, name, type, budget_limit, color, is_recurring) VALUES (?, ?, ?, ?, ?, ?)',
+    id, name, type, budget_limit || 0, color || '#007AFF', is_recurring ? 1 : 0
   );
   return await db.get('SELECT * FROM categories WHERE id = ?', id);
 }
 
-export async function updateCategory(id, { name, type, budget_limit, color }) {
+export async function updateCategory(id, { name, type, budget_limit, color, is_recurring }) {
   await db.run(
-    'UPDATE categories SET name=?, type=?, budget_limit=?, color=? WHERE id=?',
-    name, type, budget_limit || 0, color || '#007AFF', id
+    'UPDATE categories SET name=?, type=?, budget_limit=?, color=?, is_recurring=? WHERE id=?',
+    name, type, budget_limit || 0, color || '#007AFF', is_recurring ? 1 : 0, id
   );
   return await db.get('SELECT * FROM categories WHERE id = ?', id);
 }
