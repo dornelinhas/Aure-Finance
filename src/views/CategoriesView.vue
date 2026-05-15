@@ -41,8 +41,9 @@
                 </div>
                 <div>
                   <h3 class="font-bold text-[15px] text-[var(--color-text-primary)]">{{ cat.name }}</h3>
-                  <p v-if="cat.budget_limit > 0" class="text-[12px] font-medium text-[var(--color-text-secondary)] mt-0.5">Limite: {{ fmt(cat.budget_limit) }}</p>
-                  <p v-else class="text-[12px] font-medium text-[var(--color-text-secondary)] mt-0.5">Sem limite definido</p>
+                  <p v-if="cat.budget_limit > 0" class="text-[12px] font-medium text-[var(--color-text-secondary)] mt-0.5">Expectativa: {{ fmt(cat.budget_limit) }}</p>
+                  <p v-else class="text-[12px] font-medium text-[var(--color-text-secondary)] mt-0.5">Sem valor definido</p>
+                  <span v-if="cat.name === 'Salário'" class="inline-block mt-1 text-[9px] font-black uppercase tracking-tighter bg-[var(--color-income-bg)] text-[var(--color-income)] px-1.5 py-0.5 rounded border border-[var(--color-income)]/20">Receita Fixa Recorrente</span>
                 </div>
               </div>
               
@@ -120,11 +121,13 @@
               <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-sm" :style="{ backgroundColor: cat.color }">
                   <span class="font-bold text-[15px] uppercase tracking-widest">{{ cat.name.substring(0, 2) }}</span>
-                </div>
                 <div>
                   <h3 class="font-bold text-[15px] text-[var(--color-text-primary)]">{{ cat.name }}</h3>
-                  <p v-if="cat.budget_limit > 0" class="text-[12px] font-medium text-[var(--color-text-secondary)] mt-0.5">Esperado: {{ fmt(cat.budget_limit) }}</p>
+                  <p v-if="cat.budget_limit > 0" class="text-[12px] font-medium text-[var(--color-text-secondary)] mt-0.5">Expectativa: {{ fmt(cat.budget_limit) }}</p>
                   <p v-else class="text-[12px] font-medium text-[var(--color-text-secondary)] mt-0.5">Sem valor definido</p>
+                  <span v-if="cat.name === 'Salário'" class="inline-block mt-1 text-[9px] font-black uppercase tracking-tighter bg-[var(--color-income-bg)] text-[var(--color-income)] px-1.5 py-0.5 rounded border border-[var(--color-income)]/20">Receita Fixa Recorrente</span>
+                </div>
+                  <span v-if="cat.name === 'Salário'" class="inline-block mt-1 text-[9px] font-black uppercase tracking-tighter bg-[var(--color-income-bg)] text-[var(--color-income)] px-1.5 py-0.5 rounded border border-[var(--color-income)]/20">Receita Fixa Recorrente</span>
                 </div>
               </div>
               
