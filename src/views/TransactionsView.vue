@@ -312,7 +312,7 @@
         </div>
         <input type="checkbox" v-model="form.is_paid" class="w-6 h-6 rounded border-[var(--color-border)] text-[var(--color-accent)] focus:ring-[var(--color-accent)] cursor-pointer">
       </div>
-      <div class="mb-4 flex items-center justify-between p-4 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-secondary)]/30">
+      <div v-if="form.type === 'expense' && form.category !== 'Salário'" class="mb-4 flex items-center justify-between p-4 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-secondary)]/30">
         <div>
           <p class="text-sm font-bold text-[var(--color-text-primary)]">Essa despesa é minha?</p>
           <p class="text-[11px] text-[var(--color-text-secondary)] font-medium">Se desmarcado, não será descontado do seu saldo pessoal.</p>
@@ -320,7 +320,7 @@
         <input type="checkbox" v-model="form.is_personal" class="w-6 h-6 rounded border-[var(--color-border)] text-[var(--color-accent)] focus:ring-[var(--color-accent)] cursor-pointer">
       </div>
       <!-- Debt toggle (only for expenses) -->
-      <div v-if="form.type === 'expense'" class="mb-4 flex items-center justify-between p-4 rounded-xl border border-[var(--color-border)] bg-[var(--color-expense-bg)]/20">
+      <div v-if="form.type === 'expense' && form.category !== 'Salário'" class="mb-4 flex items-center justify-between p-4 rounded-xl border border-[var(--color-border)] bg-[var(--color-expense-bg)]/20">
         <div>
           <p class="text-sm font-bold text-[var(--color-expense)]">Eu devo esse valor a alguém?</p>
           <p class="text-[11px] text-[var(--color-text-secondary)] font-medium">Marque como dívida para lembrar de pagar depois.</p>
@@ -336,7 +336,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { api } from '../api/index.js'
 import { useExport } from '../composables/useExport.js'
@@ -374,6 +374,20 @@ const tempSelectedAccounts = ref([])
 
 const emptyForm = () => ({ name: '', amount: '', category: '', date: new Date().toISOString().slice(0, 10), type: 'expense', account: 'Conta Corrente', is_paid: true, is_personal: true, is_debt: false, is_installment: false, installments_paid: 0, installments_remaining: 1 })
 const form = ref(emptyForm())
+
+// Watch category to enforce income type if it's Salary
+watch(() => form.value.category, (newCat) => {
+  if (newCat === 'Salário') {
+    form.value.type = 'income'
+  }
+})
+
+// Watch type to clear category if it's Salary but user switched to expense
+watch(() => form.value.type, (newType) => {
+  if (newType === 'expense' && form.value.category === 'Salário') {
+    form.value.category = ''
+  }
+})
 
 onMounted(async () => {
   const [txns, cats, cardList] = await Promise.all([

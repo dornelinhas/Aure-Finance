@@ -43,6 +43,13 @@
         <span v-if="!store.loading" class="text-[8px] sm:text-[10px] font-medium opacity-70">Vence dia {{ store.settings.credit_card_due_day || 10 }}</span>
       </router-link>
       <div class="flex flex-col items-center sm:items-end text-center sm:text-right">
+        <span class="text-[9px] sm:text-[11px] font-bold opacity-70 uppercase tracking-widest mb-1">Receita Livre</span>
+        <div v-if="store.loading" class="mt-1">
+          <SkeletonLoader width="w-24" height="h-6" class="opacity-20 bg-white!" />
+        </div>
+        <span v-else class="text-[16px] sm:text-[20px] font-bold">{{ fmt(freeIncome) }}</span>
+      </div>
+      <div class="flex flex-col items-center sm:items-end text-center sm:text-right">
         <span class="text-[9px] sm:text-[11px] font-bold opacity-70 uppercase tracking-widest mb-1">Receita (Bruta)</span>
         <div v-if="store.loading" class="mt-1">
           <SkeletonLoader width="w-24" height="h-6" class="opacity-20 bg-white!" />
@@ -59,7 +66,7 @@ import { useFinanceUtils } from '../../composables/useFinanceUtils.js';
 import SkeletonLoader from '../SkeletonLoader.vue';
 
 const store = useFinanceStore();
-const { fmt, availableBalance, totalIncome, totalExpense, cardExpense, monthLabel, currentYear } = useFinanceUtils();
+const { fmt, availableBalance, freeIncome, totalIncome, totalExpense, cardExpense, monthLabel, currentYear } = useFinanceUtils();
 
-defineEmits([]);
+defineEmits(['open-salary']);
 </script>

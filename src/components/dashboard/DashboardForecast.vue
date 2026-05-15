@@ -41,7 +41,7 @@
         <div v-if="store.loading" class="py-1">
           <SkeletonLoader width="w-3/4" height="h-7" class="bg-[var(--color-income)]! opacity-20" />
         </div>
-        <p v-else class="text-[28px] font-extrabold text-[var(--color-income)] tracking-tight leading-none mb-1">{{ fmt(Math.max(0, store.settings.monthly_salary - nextMonthForecast)) }}</p>
+        <p v-else class="text-[28px] font-extrabold text-[var(--color-income)] tracking-tight leading-none mb-1">{{ fmt(Math.max(0, (nextMonthIncome || store.settings.monthly_salary) - nextMonthForecast)) }}</p>
         <p class="text-[11px] font-medium text-[var(--color-income)]">Após compromissos</p>
       </div>
     </div>
@@ -57,11 +57,11 @@
       <div v-else class="grid grid-cols-2 gap-x-6 gap-y-2 max-sm:grid-cols-1">
         <div v-for="item in forecastItems.slice(0, 8)" :key="item.name" class="flex items-center justify-between py-1.5 border-b border-[var(--color-separator)]">
           <div class="flex items-center gap-2">
-            <span class="w-1.5 h-1.5 rounded-full" :class="item.type === 'sub' ? 'bg-[var(--color-accent)]' : 'bg-[var(--color-expense)]'"></span>
+            <span class="w-1.5 h-1.5 rounded-full" :class="item.type === 'income' ? 'bg-[var(--color-income)]' : (item.type === 'sub' ? 'bg-[var(--color-accent)]' : 'bg-[var(--color-expense)]')"></span>
             <span class="text-[12px] font-medium text-[var(--color-text-secondary)]">{{ item.name }}</span>
             <span class="text-[10px] font-medium text-[var(--color-text-tertiary)] bg-[var(--color-surface-secondary)] px-1.5 py-0.5 rounded">{{ item.label }}</span>
           </div>
-          <span class="text-[12px] font-bold text-[var(--color-text-primary)]">{{ fmt(item.amount) }}</span>
+          <span class="text-[12px] font-bold" :class="item.type === 'income' ? 'text-[var(--color-income)]' : 'text-[var(--color-text-primary)]'">{{ fmt(item.amount) }}</span>
         </div>
       </div>
     </div>
@@ -95,6 +95,17 @@ const activeShoppingItemsCount = computed(() => {
   return store.stock.filter(s => s.quantity <= s.min_qty && (!s.list_id || activeListsIds.includes(s.list_id))).length;
 });
 
+const nextMonthIncome = computed(() => {
+  const nm = nextMonthDate.getMonth();
+  const ny = nextMonthDate.getFullYear();
+  return store.transactions
+    .filter(t => {
+      const d = new Date(t.date + 'T12:00:00');
+      return d.getMonth() === nm && d.getFullYear() === ny && t.type === 'income';
+    })
+    .reduce((s, t) => s + t.amount, 0);
+});
+
 const nextMonthForecast = computed(() => {
   const nm = nextMonthDate.getMonth();
   const ny = nextMonthDate.getFullYear();
@@ -110,16 +121,33 @@ const nextMonthForecast = computed(() => {
 
 const forecastItems = computed(() => {
   const items = [];
-  activeSubs.value.forEach(s => items.push({ name: s.name, amount: s.amount, type: 'sub', label: 'Assinatura' }));
   
   const nm = nextMonthDate.getMonth();
   const ny = nextMonthDate.getFullYear();
+
+  // Add Income (Salário, etc)
+  store.transactions
+    .filter(t => {
+      const d = new Date(t.date + 'T12:00:00');
+      return d.getMonth() === nm && d.getFullYear() === ny && t.type === 'income';
+    })
+    .forEach(t => items.push({ name: t.name, amount: t.amount, type: 'income', label: 'Receita' }));
+
+  // If no income transactions but has base salary, show as projection
+  if (items.filter(i => i.type === 'income').length === 0 && store.settings.monthly_salary > 0) {
+    items.push({ name: 'Projeção de Salário', amount: store.settings.monthly_salary, type: 'income', label: 'Estimativa' });
+  }
+
+  // Add Subscriptions
+  activeSubs.value.forEach(s => items.push({ name: s.name, amount: s.amount, type: 'sub', label: 'Assinatura' }));
+  
+  // Add Expense Transactions (Installments, etc)
   store.transactions
     .filter(t => {
       const d = new Date(t.date + 'T12:00:00');
       return d.getMonth() === nm && d.getFullYear() === ny && t.type === 'expense';
     })
-    .forEach(t => items.push({ name: t.name, amount: t.amount, type: 'installment', label: 'Parcela' }));
+    .forEach(t => items.push({ name: t.name, amount: t.amount, type: 'installment', label: 'Despesa' }));
   
   return items.sort((a, b) => b.amount - a.amount);
 });

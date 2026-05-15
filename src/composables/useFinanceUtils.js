@@ -69,6 +69,11 @@ export function useFinanceUtils() {
     return totalIncome.value - totalExpense.value - cardExpense.value;
   });
 
+  const freeIncome = computed(() => {
+    const base = totalIncome.value || store.settings.monthly_salary || 0;
+    return base - totalExpense.value - cardExpense.value;
+  });
+
   const savingsRate = computed(() => {
     const base = store.settings.monthly_salary || totalIncome.value || 1;
     const balance = (store.settings.initial_balance || 0) + totalIncome.value - totalExpense.value;
@@ -88,6 +93,7 @@ export function useFinanceUtils() {
     thirdPartyDebt,
     myDebts,
     availableBalance,
+    freeIncome,
     savingsRate
   };
 }
