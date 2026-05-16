@@ -1,5 +1,10 @@
 <template>
   <div class="h-full flex flex-col bg-[var(--color-bg)] overflow-auto font-[var(--font-sans)]">
+    <!-- BANNER DE CONFIRMAÇÃO DE ATUALIZAÇÃO -->
+    <div class="bg-yellow-400 text-black py-2 text-center font-black uppercase text-xs tracking-widest">
+      SISTEMA ATUALIZADO (19:00) - SE VOCÊ ESTÁ VENDO ISSO, A ATUALIZAÇÃO FUNCIONOU
+    </div>
+
     <div class="px-6 py-6 pb-12 w-full max-w-[1200px] mx-auto">
       
       <!-- Cabeçalho Principal -->
@@ -69,9 +74,9 @@
                 </div>
               </div>
               <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-all transform scale-90 group-hover:scale-100">
-                <button class="p-3 rounded-2xl text-gray-400 hover:bg-green-600 hover:text-white shadow-sm hover:shadow-lg transition-all border-none bg-transparent cursor-pointer" @click="quickAdd(cat)" title="Adicionar Entrada"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
-                <button class="p-3 rounded-2xl text-gray-400 hover:bg-blue-600 hover:text-white shadow-sm hover:shadow-lg transition-all border-none bg-transparent cursor-pointer" @click="openModal(cat)" title="Configurar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></button>
-                <button class="p-3 rounded-2xl text-gray-400 hover:bg-red-600 hover:text-white shadow-sm hover:shadow-lg transition-all border-none bg-transparent cursor-pointer" @click="remove(cat.id)" title="Excluir"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
+                <button class="p-3 rounded-2xl text-gray-400 hover:bg-green-600 hover:text-white transition-all border-none bg-transparent cursor-pointer" @click="quickAdd(cat)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
+                <button class="p-3 rounded-2xl text-gray-400 hover:bg-blue-600 hover:text-white transition-all border-none bg-transparent cursor-pointer" @click="openModal(cat)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></button>
+                <button class="p-3 rounded-2xl text-gray-400 hover:bg-red-600 hover:text-white transition-all border-none bg-transparent cursor-pointer" @click="remove(cat.id)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
               </div>
             </div>
 
@@ -110,13 +115,13 @@
                 </div>
                 <div>
                   <h3 class="font-black text-lg text-[var(--color-text-primary)] uppercase tracking-tight">{{ cat.name }}</h3>
-                  <p v-if="cat.budget_limit > 0" class="text-[11px] font-black text-gray-400 uppercase tracking-tighter">Limite: {{ fmt(cat.budget_limit) }}</p>
+                  <p v-if="cat.budget_limit > 0" class="text-[11px] font-black text-gray-400 uppercase tracking-widest">Limite: {{ fmt(cat.budget_limit) }}</p>
                 </div>
               </div>
               <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-all transform scale-90 group-hover:scale-100">
-                <button class="p-3 rounded-2xl text-gray-400 hover:bg-red-600 hover:text-white shadow-sm transition-all border-none bg-transparent cursor-pointer" @click="quickAdd(cat)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
-                <button class="p-3 rounded-2xl text-gray-400 hover:bg-blue-600 hover:text-white shadow-sm transition-all border-none bg-transparent cursor-pointer" @click="openModal(cat)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></button>
-                <button class="p-3 rounded-2xl text-gray-400 hover:bg-red-600 hover:text-white shadow-sm transition-all border-none bg-transparent cursor-pointer" @click="remove(cat.id)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
+                <button class="p-3 rounded-2xl text-gray-400 hover:bg-red-600 hover:text-white transition-all border-none bg-transparent cursor-pointer" @click="quickAdd(cat)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
+                <button class="p-3 rounded-2xl text-gray-400 hover:bg-blue-600 hover:text-white transition-all border-none bg-transparent cursor-pointer" @click="openModal(cat)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></button>
+                <button class="p-3 rounded-2xl text-gray-400 hover:bg-red-600 hover:text-white transition-all border-none bg-transparent cursor-pointer" @click="remove(cat.id)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
               </div>
             </div>
 
@@ -147,11 +152,11 @@
           </div>
           <div 
             @click="form.is_recurring = !form.is_recurring"
-            class="w-20 h-10 rounded-full relative cursor-pointer transition-all duration-300 shadow-inner flex items-center px-1.5"
+            class="w-20 h-10 rounded-full relative cursor-pointer transition-all duration-500 shadow-inner flex items-center px-1.5"
             :class="form.is_recurring ? 'bg-blue-600' : 'bg-gray-300'"
           >
             <div 
-              class="w-7 h-7 bg-white rounded-full transition-all duration-300 shadow-2xl"
+              class="w-7 h-7 bg-white rounded-full transition-all duration-500 shadow-2xl"
               :style="{ transform: form.is_recurring ? 'translateX(40px)' : 'translateX(0px)' }"
             ></div>
           </div>
@@ -159,14 +164,14 @@
 
         <div class="grid grid-cols-2 gap-8">
           <div>
-            <label class="block text-[12px] font-black text-gray-500 uppercase mb-4 tracking-widest text-left">Categoria de:</label>
+            <label class="block text-[12px] font-black text-gray-500 uppercase mb-4 tracking-widest text-left">Tipo:</label>
             <div class="flex flex-col gap-3">
-              <button @click="form.type = 'income'" class="w-full py-5 rounded-2xl text-[12px] font-black uppercase transition-all border-4 cursor-pointer shadow-sm border-none" :class="form.type === 'income' ? 'bg-green-600 text-white shadow-xl' : 'bg-gray-100 text-gray-400'">GANHO (+)</button>
-              <button @click="form.type = 'expense'" class="w-full py-5 rounded-2xl text-[12px] font-black uppercase transition-all border-4 cursor-pointer shadow-sm border-none" :class="form.type === 'expense' ? 'bg-red-600 text-white shadow-xl' : 'bg-gray-100 text-gray-400'">GASTO (-)</button>
+              <button @click="form.type = 'income'" class="w-full py-5 rounded-2xl text-[12px] font-black uppercase transition-all border-none cursor-pointer shadow-sm" :class="form.type === 'income' ? 'bg-green-600 text-white shadow-xl' : 'bg-gray-100 text-gray-400'">GANHO (+)</button>
+              <button @click="form.type = 'expense'" class="w-full py-5 rounded-2xl text-[12px] font-black uppercase transition-all border-none cursor-pointer shadow-sm" :class="form.type === 'expense' ? 'bg-red-600 text-white shadow-xl' : 'bg-gray-100 text-gray-400'">GASTO (-)</button>
             </div>
           </div>
           <div>
-            <label class="block text-[12px] font-black text-gray-500 uppercase mb-4 tracking-widest text-left">Identificação:</label>
+            <label class="block text-[12px] font-black text-gray-500 uppercase mb-4 tracking-widest text-left">Cor:</label>
             <input type="color" v-model="form.color" class="w-full h-[120px] rounded-[32px] cursor-pointer border-8 border-white shadow-2xl p-1 bg-white" />
           </div>
         </div>
@@ -187,7 +192,7 @@
 
       <template #footer>
         <div class="flex gap-5 w-full pt-6">
-          <button class="flex-1 px-8 py-6 rounded-[32px] border-4 border-gray-100 text-sm font-black uppercase tracking-widest cursor-pointer hover:bg-gray-50 transition-all active:scale-95 bg-transparent border-none" @click="closeModal">Cancelar</button>
+          <button class="flex-1 px-8 py-6 rounded-[32px] border-none text-sm font-black uppercase tracking-widest cursor-pointer hover:bg-gray-100 transition-all active:scale-95 bg-transparent" @click="closeModal">Cancelar</button>
           <button class="flex-[2] px-8 py-6 rounded-[32px] bg-blue-600 text-white text-sm font-black uppercase tracking-widest shadow-2xl shadow-blue-400 border-none cursor-pointer hover:bg-blue-700 transition-all active:scale-95" @click="save">Salvar Alterações</button>
         </div>
       </template>
@@ -210,12 +215,14 @@ const { on } = useEventBus()
 const MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
 const today = new Date()
 
+// Estado de Visualização Reativo
 const viewMonth = ref(today.getMonth())
 const viewYear = ref(today.getFullYear())
 const isRefreshing = ref(false)
 
 const fmt = v => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v || 0)
 
+// USAR DADOS DIRETAMENTE DO STORE PARA GARANTIR REATIVIDADE TOTAL
 const incomeCategories = computed(() => store.categories.filter(c => c.type === 'income'))
 const expenseCategories = computed(() => store.categories.filter(c => c.type === 'expense'))
 
@@ -236,7 +243,7 @@ const spentMap = computed(() => {
 })
 
 function getSpentForCat(catName) {
-  return spentMap.value[catName.trim().toLowerCase()] || 0
+  return spentMap.value[(catName || '').trim().toLowerCase()] || 0
 }
 
 const totalMonthIncome = computed(() => {
@@ -298,6 +305,7 @@ async function save() {
     res = await api.createCategory(data)
   }
 
+  // Sincroniza Salário com Base Global do Sistema
   if (res.name.toLowerCase().includes('salário') || res.name.toLowerCase().includes('salario')) {
     if (res.type === 'income') {
       await store.updateSettings({ ...store.settings, monthly_salary: res.budget_limit })
