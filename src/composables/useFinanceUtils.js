@@ -1,4 +1,4 @@
-import { computed } from 'vue';
+import { ref, computed } from 'vue';
 import { useFinanceStore } from '../stores/finance.js';
 
 export function useFinanceUtils() {
@@ -9,18 +9,20 @@ export function useFinanceUtils() {
     currency: 'BRL' 
   }).format(v || 0);
 
-  const today = new Date();
-  const currentMonth = today.getMonth();
-  const currentYear = today.getFullYear();
   const MONTHS = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  
+  // Usar data atual REATIVA
+  const today = ref(new Date());
+  const currentMonth = computed(() => today.value.getMonth());
+  const currentYear = computed(() => today.value.getFullYear());
 
-  const monthLabel = computed(() => MONTHS[currentMonth]);
+  const monthLabel = computed(() => MONTHS[currentMonth.value]);
 
   // Filtro de transações do mês atual
   const monthTxns = computed(() =>
     store.transactions.filter(t => {
       const d = new Date(t.date + 'T12:00:00');
-      return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+      return d.getMonth() === currentMonth.value && d.getFullYear() === currentYear.value;
     })
   );
 
@@ -30,13 +32,11 @@ export function useFinanceUtils() {
   );
 
   const totalExpense = computed(() => {
-    // Gastos que não são cartão de crédito
     const cardNames = store.cards.map(c => c.name);
     const regularExpense = monthTxns.value
       .filter(t => t.type === 'expense' && !cardNames.includes(t.account) && t.is_paid && t.is_personal)
       .reduce((s, t) => s + t.amount, 0);
     
-    // Assinaturas ainda não processadas este mês
     const subRemaining = store.subscriptions.filter(s => !!s.active).reduce((total, s) => {
       const subTxnName = 'Assinatura: ' + s.name;
       const hasBeenProcessed = monthTxns.value.some(t => t.name === subTxnName);
@@ -44,18 +44,6 @@ export function useFinanceUtils() {
     }, 0);
 
     return regularExpense + subRemaining;
-  });
-
-  const thirdPartyDebt = computed(() => {
-    return store.transactions
-      .filter(t => t.type === 'expense' && !t.is_personal)
-      .reduce((s, t) => s + t.amount, 0);
-  });
-
-  const myDebts = computed(() => {
-    return store.transactions
-      .filter(t => !!t.is_debt && !t.is_paid)
-      .reduce((s, t) => s + t.amount, 0);
   });
 
   const cardExpense = computed(() => {
@@ -75,8 +63,8 @@ export function useFinanceUtils() {
   });
 
   const nextMonthIncome = computed(() => {
-    const nm = (currentMonth + 1) % 12;
-    const ny = currentMonth === 11 ? currentYear + 1 : currentYear;
+    const nm = (currentMonth.value + 1) % 12;
+    const ny = currentMonth.value === 11 ? currentYear.value + 1 : currentYear.value;
     return store.transactions
       .filter(t => {
         const d = new Date(t.date + 'T12:00:00');
@@ -101,8 +89,6 @@ export function useFinanceUtils() {
     totalIncome,
     totalExpense,
     cardExpense,
-    thirdPartyDebt,
-    myDebts,
     availableBalance,
     freeIncome,
     nextMonthIncome,
