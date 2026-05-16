@@ -82,6 +82,10 @@
           <h2 class="text-xl font-black text-[var(--color-text-primary)] uppercase tracking-tighter">Gastos / Contas</h2>
         </div>
 
+        <div v-if="expenseCategories.length === 0" class="mx-4 bg-[var(--color-surface)] border-2 border-dashed border-[var(--color-border)] rounded-[32px] p-12 text-center">
+          <p class="text-gray-400 font-bold uppercase tracking-widest">Nenhuma conta cadastrada ainda.</p>
+        </div>
+
         <div v-else class="grid grid-cols-3 gap-6 max-lg:grid-cols-2 max-sm:grid-cols-1">
           <div v-for="cat in expenseCategories" :key="cat.id" class="bg-[var(--color-surface)] border-2 border-[var(--color-border)] rounded-[28px] p-7 shadow-sm relative overflow-hidden transition-all hover:shadow-xl group">
             <div class="absolute top-0 left-0 right-0 h-2" :style="{ backgroundColor: cat.color }"></div>
@@ -96,7 +100,7 @@
                   <p v-if="cat.budget_limit > 0" class="text-[11px] font-black text-gray-400 uppercase tracking-tighter">Limite: {{ fmt(cat.budget_limit) }}</p>
                 </div>
               </div>
-              <div class="flex gap-2">
+              <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-all">
                 <button class="p-2.5 rounded-xl text-gray-400 hover:bg-red-600 hover:text-white transition-colors" @click="quickAdd(cat)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
                 <button class="p-2.5 rounded-xl text-gray-400 hover:bg-blue-600 hover:text-white transition-colors" @click="openModal(cat)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></button>
               </div>
@@ -117,11 +121,11 @@
       </div>
     </div>
 
-    <!-- MODAL DE CONFIGURAÇÃO (TOTALMENTE REESCRITO) -->
+    <!-- MODAL DE CONFIGURAÇÃO -->
     <AppModal :visible="showModal" title="DETALHES DA CATEGORIA" @close="closeModal">
       <div class="space-y-8 py-4">
         
-        <!-- 1. CHAVE RECORRENTE (SUPER DESTAQUE) -->
+        <!-- 1. CHAVE RECORRENTE -->
         <div class="p-6 rounded-[32px] border-4 border-blue-600 bg-blue-600/5 shadow-2xl flex items-center justify-between">
           <div class="flex-1 pr-6 text-left">
             <p class="text-[16px] font-black text-blue-900 uppercase tracking-tight">FIXAR VALOR TODOS OS MESES?</p>
