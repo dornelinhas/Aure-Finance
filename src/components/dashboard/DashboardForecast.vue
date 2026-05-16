@@ -5,7 +5,7 @@
         <div class="w-1.5 h-5 bg-[var(--color-accent)] rounded-full"></div>
         <h3 class="text-[13px] font-black text-[var(--color-text-primary)] uppercase tracking-wider">Projeção: {{ nextMonthLabel }}</h3>
       </div>
-      <span class="text-[11px] font-bold text-blue-600 uppercase tracking-widest bg-blue-50 px-2 py-0.5 rounded">Futuro</span>
+      <span class="text-[11px] font-bold text-blue-600 uppercase tracking-widest bg-blue-50 px-2 py-0.5 rounded">Previsão Futura</span>
     </div>
 
     <div class="grid grid-cols-5 gap-4 max-md:grid-cols-2 max-sm:grid-cols-1">
@@ -34,7 +34,7 @@
       <div class="bg-green-50 border-2 border-green-100 rounded-xl p-5 shadow-sm">
         <p class="text-[11px] font-black text-green-700 uppercase tracking-wider mb-2">Receita Prevista</p>
         <p class="text-[24px] font-black text-green-600 tracking-tight leading-none mb-1">{{ fmt(nextMonthIncomeTotal) }}</p>
-        <p class="text-[10px] font-black text-green-500 uppercase">{{ nextMonthIncomeTotal > 0 ? 'Somado' : 'Sem previsão' }}</p>
+        <p class="text-[10px] font-black text-green-500 uppercase">{{ nextMonthIncomeTotal > 0 ? 'Total Somado' : 'Sem previsão' }}</p>
       </div>
 
       <!-- Receita Livre -->
@@ -93,7 +93,7 @@ const forecastItems = computed(() => {
   const nm = (currentMonth.value + 1) % 12;
   const ny = currentMonth.value === 11 ? currentYear.value + 1 : currentYear.value;
 
-  // 1. Receitas Reais (Junho)
+  // 1. Receitas Reais (Lançamentos manuais para o mês seguinte)
   const registeredIncome = store.transactions.filter(t => {
     const d = new Date(t.date + 'T12:00:00');
     return d.getMonth() === nm && d.getFullYear() === ny && t.type === 'income';
@@ -102,13 +102,14 @@ const forecastItems = computed(() => {
 
   // 2. Receitas Fixas (Categorias Marcadas como Recorrentes)
   store.categories.filter(c => c.type === 'income' && (!!c.is_recurring || c.name.toLowerCase().includes('salário')) && c.budget_limit > 0).forEach(c => {
-    const exists = registeredIncome.some(t => t.category === c.name);
-    if (!exists) {
-      items.push({ name: c.name, amount: c.budget_limit, type: 'income', label: 'Recorrente' });
+    // Só adiciona se não houver um lançamento manual com o mesmo nome para evitar duplicar
+    const alreadyRegistered = registeredIncome.some(t => t.category.toLowerCase() === c.name.toLowerCase());
+    if (!alreadyRegistered) {
+      items.push({ name: c.name, amount: c.budget_limit, type: 'income', label: 'Fixo Mensal' });
     }
   });
 
-  // Fallback Global
+  // Fallback Global (Se não houver nada, usa o salário das configurações)
   if (items.filter(i => i.type === 'income').length === 0 && store.settings.monthly_salary > 0) {
     items.push({ name: 'Salário Base', amount: store.settings.monthly_salary, type: 'income', label: 'Configurado' });
   }
@@ -116,18 +117,18 @@ const forecastItems = computed(() => {
   // 3. Assinaturas
   activeSubs.value.forEach(s => items.push({ name: s.name, amount: s.amount, type: 'sub', label: 'Assinatura' }));
 
-  // 4. Despesas Reais (Junho)
+  // 4. Despesas Reais (Lançamentos manuais para o mês seguinte)
   const registeredExpense = store.transactions.filter(t => {
     const d = new Date(t.date + 'T12:00:00');
     return d.getMonth() === nm && d.getFullYear() === ny && t.type === 'expense' && !!t.is_personal;
   });
-  registeredExpense.forEach(t => items.push({ name: t.name, amount: t.amount, type: 'expense', label: 'Lançamento' }));
+  registeredExpense.forEach(t => items.push({ name: t.name, amount: t.amount, type: 'expense', label: 'Parcela/Lançamento' }));
 
   // 5. Despesas Fixas (Orçamentos Recorrentes)
   store.categories.filter(c => c.type === 'expense' && !!c.is_recurring && c.budget_limit > 0).forEach(c => {
-    const exists = registeredExpense.some(t => t.category === c.name);
+    const exists = registeredExpense.some(t => t.category.toLowerCase() === c.name.toLowerCase());
     if (!exists) {
-      items.push({ name: c.name, amount: c.budget_limit, type: 'expense', label: 'Orçamento' });
+      items.push({ name: c.name, amount: c.budget_limit, type: 'expense', label: 'Gasto Fixo' });
     }
   });
 

@@ -7,7 +7,7 @@
         <div class="flex-1">
           <div class="flex items-center gap-3">
             <h1 class="text-[32px] font-black tracking-tight text-[var(--color-text-primary)] uppercase">Suas Categorias</h1>
-            <button @click="forceRefresh" class="p-2 rounded-full hover:bg-gray-100 transition-all text-blue-600" title="Sincronizar Dados">
+            <button @click="forceRefresh" class="p-2 rounded-full hover:bg-gray-100 transition-all text-blue-600 border-none bg-transparent cursor-pointer" title="Sincronizar Dados">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" :class="{ 'animate-spin': isRefreshing }"><path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
             </button>
           </div>
@@ -31,7 +31,7 @@
         <button class="inline-flex items-center justify-center gap-2 px-8 py-5 rounded-[24px] text-xs font-black uppercase cursor-pointer transition-all duration-150 border-none bg-blue-600 text-white hover:bg-blue-700 shadow-xl shadow-blue-200 active:scale-95" @click="openModal()">+ Nova Categoria</button>
       </div>
 
-      <!-- SEÇÃO RECEITAS (SOMA TUDO O QUE ENTRA) -->
+      <!-- SEÇÃO RECEITAS -->
       <div class="mb-12">
         <div class="flex items-center justify-between mb-6 px-4 sm:px-8">
           <div class="flex items-center gap-3">
@@ -69,8 +69,9 @@
                 </div>
               </div>
               <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-all transform scale-90 group-hover:scale-100">
-                <button class="p-3 rounded-2xl text-gray-400 hover:bg-green-600 hover:text-white shadow-sm hover:shadow-lg transition-all" @click="quickAdd(cat)" title="Adicionar Entrada"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
-                <button class="p-3 rounded-2xl text-gray-400 hover:bg-blue-600 hover:text-white shadow-sm hover:shadow-lg transition-all" @click="openModal(cat)" title="Configurar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></button>
+                <button class="p-3 rounded-2xl text-gray-400 hover:bg-green-600 hover:text-white shadow-sm hover:shadow-lg transition-all border-none bg-transparent cursor-pointer" @click="quickAdd(cat)" title="Adicionar Entrada"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
+                <button class="p-3 rounded-2xl text-gray-400 hover:bg-blue-600 hover:text-white shadow-sm hover:shadow-lg transition-all border-none bg-transparent cursor-pointer" @click="openModal(cat)" title="Configurar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></button>
+                <button class="p-3 rounded-2xl text-gray-400 hover:bg-red-600 hover:text-white shadow-sm hover:shadow-lg transition-all border-none bg-transparent cursor-pointer" @click="remove(cat.id)" title="Excluir"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
               </div>
             </div>
 
@@ -109,12 +110,13 @@
                 </div>
                 <div>
                   <h3 class="font-black text-lg text-[var(--color-text-primary)] uppercase tracking-tight">{{ cat.name }}</h3>
-                  <p v-if="cat.budget_limit > 0" class="text-[11px] font-black text-gray-400 uppercase tracking-widest">Limite: {{ fmt(cat.budget_limit) }}</p>
+                  <p v-if="cat.budget_limit > 0" class="text-[11px] font-black text-gray-400 uppercase tracking-tighter">Limite: {{ fmt(cat.budget_limit) }}</p>
                 </div>
               </div>
-              <div class="flex gap-2">
-                <button class="p-3 rounded-2xl text-gray-400 hover:bg-red-600 hover:text-white shadow-sm transition-all" @click="quickAdd(cat)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
-                <button class="p-3 rounded-2xl text-gray-400 hover:bg-blue-600 hover:text-white shadow-sm transition-all" @click="openModal(cat)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></button>
+              <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-all transform scale-90 group-hover:scale-100">
+                <button class="p-3 rounded-2xl text-gray-400 hover:bg-red-600 hover:text-white shadow-sm transition-all border-none bg-transparent cursor-pointer" @click="quickAdd(cat)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
+                <button class="p-3 rounded-2xl text-gray-400 hover:bg-blue-600 hover:text-white shadow-sm transition-all border-none bg-transparent cursor-pointer" @click="openModal(cat)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></button>
+                <button class="p-3 rounded-2xl text-gray-400 hover:bg-red-600 hover:text-white shadow-sm transition-all border-none bg-transparent cursor-pointer" @click="remove(cat.id)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
               </div>
             </div>
 
@@ -133,7 +135,7 @@
       </div>
     </div>
 
-    <!-- MODAL DE CONFIGURAÇÃO (TEXTOS GRANDES E OBJETIVOS) -->
+    <!-- MODAL DE CONFIGURAÇÃO -->
     <AppModal :visible="showModal" title="CONFIGURAR CATEGORIA" @close="closeModal">
       <div class="space-y-10 py-6">
         
@@ -145,11 +147,11 @@
           </div>
           <div 
             @click="form.is_recurring = !form.is_recurring"
-            class="w-20 h-10 rounded-full relative cursor-pointer transition-all duration-500 shadow-inner flex items-center px-1.5"
+            class="w-20 h-10 rounded-full relative cursor-pointer transition-all duration-300 shadow-inner flex items-center px-1.5"
             :class="form.is_recurring ? 'bg-blue-600' : 'bg-gray-300'"
           >
             <div 
-              class="w-7 h-7 bg-white rounded-full transition-all duration-500 shadow-2xl"
+              class="w-7 h-7 bg-white rounded-full transition-all duration-300 shadow-2xl"
               :style="{ transform: form.is_recurring ? 'translateX(40px)' : 'translateX(0px)' }"
             ></div>
           </div>
@@ -159,8 +161,8 @@
           <div>
             <label class="block text-[12px] font-black text-gray-500 uppercase mb-4 tracking-widest text-left">Categoria de:</label>
             <div class="flex flex-col gap-3">
-              <button @click="form.type = 'income'" class="w-full py-5 rounded-2xl text-[12px] font-black uppercase transition-all border-4 cursor-pointer" :class="form.type === 'income' ? 'bg-green-600 text-white border-green-200 shadow-xl' : 'bg-transparent text-gray-400 border-gray-100'">GANHO (+)</button>
-              <button @click="form.type = 'expense'" class="w-full py-5 rounded-2xl text-[12px] font-black uppercase transition-all border-4 cursor-pointer" :class="form.type === 'expense' ? 'bg-red-600 text-white border-red-200 shadow-xl' : 'bg-transparent text-gray-400 border-gray-100'">GASTO (-)</button>
+              <button @click="form.type = 'income'" class="w-full py-5 rounded-2xl text-[12px] font-black uppercase transition-all border-4 cursor-pointer shadow-sm border-none" :class="form.type === 'income' ? 'bg-green-600 text-white shadow-xl' : 'bg-gray-100 text-gray-400'">GANHO (+)</button>
+              <button @click="form.type = 'expense'" class="w-full py-5 rounded-2xl text-[12px] font-black uppercase transition-all border-4 cursor-pointer shadow-sm border-none" :class="form.type === 'expense' ? 'bg-red-600 text-white shadow-xl' : 'bg-gray-100 text-gray-400'">GASTO (-)</button>
             </div>
           </div>
           <div>
@@ -175,7 +177,7 @@
         </div>
 
         <div>
-          <label class="block text-[12px] font-black text-gray-500 uppercase mb-3 tracking-widest text-left">Valor Previsto (R$):</label>
+          <label class="block text-[12px] font-black text-gray-500 uppercase mb-3 tracking-widest text-left">Valor do Planejamento (R$):</label>
           <div class="relative">
             <span class="absolute left-8 top-1/2 -translate-y-1/2 font-black text-blue-600 text-2xl">R$</span>
             <input class="form-input !py-8 !pl-20 !rounded-[32px] !text-4xl font-black text-blue-700 bg-blue-50/20 border-4 border-blue-100 focus:border-blue-600 shadow-lg" type="number" step="0.01" v-model.number="form.budget_limit" placeholder="0,00" />
@@ -185,8 +187,8 @@
 
       <template #footer>
         <div class="flex gap-5 w-full pt-6">
-          <button class="flex-1 px-8 py-6 rounded-[32px] border-4 border-gray-100 text-sm font-black uppercase tracking-widest cursor-pointer hover:bg-gray-50 transition-all active:scale-95" @click="closeModal">Cancelar</button>
-          <button class="flex-[2] px-8 py-6 rounded-[32px] bg-blue-600 text-white text-sm font-black uppercase tracking-widest shadow-2xl shadow-blue-400 border-none cursor-pointer hover:bg-blue-700 transition-all active:scale-95" @click="save">Salvar Planejamento</button>
+          <button class="flex-1 px-8 py-6 rounded-[32px] border-4 border-gray-100 text-sm font-black uppercase tracking-widest cursor-pointer hover:bg-gray-50 transition-all active:scale-95 bg-transparent border-none" @click="closeModal">Cancelar</button>
+          <button class="flex-[2] px-8 py-6 rounded-[32px] bg-blue-600 text-white text-sm font-black uppercase tracking-widest shadow-2xl shadow-blue-400 border-none cursor-pointer hover:bg-blue-700 transition-all active:scale-95" @click="save">Salvar Alterações</button>
         </div>
       </template>
     </AppModal>
@@ -208,14 +210,12 @@ const { on } = useEventBus()
 const MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
 const today = new Date()
 
-// Estado de Visualização Reativo
 const viewMonth = ref(today.getMonth())
 const viewYear = ref(today.getFullYear())
 const isRefreshing = ref(false)
 
 const fmt = v => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v || 0)
 
-// USAR DADOS DIRETAMENTE DO STORE PARA GARANTIR REATIVIDADE
 const incomeCategories = computed(() => store.categories.filter(c => c.type === 'income'))
 const expenseCategories = computed(() => store.categories.filter(c => c.type === 'expense'))
 
@@ -254,8 +254,8 @@ const forceRefresh = async () => {
   setTimeout(() => isRefreshing.value = false, 500)
 }
 
-onMounted(() => {
-  store.fetchData()
+onMounted(async () => {
+  await store.fetchData()
   on('transaction-added', () => store.fetchData())
 })
 
@@ -267,7 +267,14 @@ const form = ref(emptyForm())
 function openModal(cat = null) {
   if (cat) {
     editing.value = cat.id
-    form.value = { ...cat, is_recurring: !!cat.is_recurring }
+    form.value = { 
+      id: cat.id,
+      name: cat.name, 
+      type: cat.type, 
+      budget_limit: cat.budget_limit || 0, 
+      color: cat.color, 
+      is_recurring: !!cat.is_recurring 
+    }
   } else {
     editing.value = null
     form.value = emptyForm()
@@ -291,7 +298,6 @@ async function save() {
     res = await api.createCategory(data)
   }
 
-  // Sincroniza Salário com Base Global
   if (res.name.toLowerCase().includes('salário') || res.name.toLowerCase().includes('salario')) {
     if (res.type === 'income') {
       await store.updateSettings({ ...store.settings, monthly_salary: res.budget_limit })
