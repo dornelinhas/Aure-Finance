@@ -13,7 +13,7 @@
         </div>
       </div>
 
-      <!-- Despesas com Limite -->
+      <!-- Despesas -->
       <div class="mb-10">
         <div class="flex items-center gap-2 mb-4">
           <div class="w-2 h-6 bg-[var(--color-expense)] rounded-full"></div>
@@ -25,29 +25,24 @@
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
           </div>
           <p class="text-base font-bold text-[var(--color-text-primary)] mb-1">Nenhuma categoria de despesa</p>
-          <p class="text-[13px] text-[var(--color-text-secondary)]">Crie categorias para definir limites de gastos e acompanhar seu orçamento.</p>
+          <p class="text-[13px] text-[var(--color-text-secondary)]">Crie categorias para definir limites de gastos.</p>
         </div>
 
         <div v-else class="grid grid-cols-3 gap-5 max-lg:grid-cols-2 max-sm:grid-cols-1">
           <div v-for="cat in expenseCategories" :key="cat.id" class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl p-6 shadow-sm hover:border-[var(--color-text-tertiary)] transition-colors relative overflow-hidden group anim-card">
-            <!-- Top color accent -->
             <div class="absolute top-0 left-0 right-0 h-1" :style="{ backgroundColor: cat.color }"></div>
-            
             <div class="flex justify-between items-start mb-5">
               <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-sm" :style="{ backgroundColor: cat.color }">
-                  <!-- Generic category icon (using initials or a simple shape) -->
                   <span class="font-bold text-[15px] uppercase tracking-widest">{{ cat.name.substring(0, 2) }}</span>
                 </div>
                 <div>
                   <h3 class="font-bold text-[15px] text-[var(--color-text-primary)]">{{ cat.name }}</h3>
-                  <p v-if="cat.budget_limit > 0" class="text-[12px] font-medium text-[var(--color-text-secondary)] mt-0.5">Expectativa: {{ fmt(cat.budget_limit) }}</p>
-                  <p v-else class="text-[12px] font-medium text-[var(--color-text-secondary)] mt-0.5">Sem valor definido</p>
-                  <span v-if="cat.name === 'Salário'" class="inline-block mt-1 text-[9px] font-black uppercase tracking-tighter bg-[var(--color-income-bg)] text-[var(--color-income)] px-1.5 py-0.5 rounded border border-[var(--color-income)]/20">Receita Fixa Recorrente</span>
+                  <p v-if="cat.budget_limit > 0" class="text-[12px] font-medium text-[var(--color-text-secondary)] mt-0.5">Limite: {{ fmt(cat.budget_limit) }}</p>
+                  <p v-else class="text-[12px] font-medium text-[var(--color-text-secondary)] mt-0.5">Sem limite definido</p>
+                  <span v-if="cat.is_recurring" class="inline-block mt-1 text-[9px] font-black uppercase tracking-tighter bg-[var(--color-surface-secondary)] text-[var(--color-text-secondary)] px-1.5 py-0.5 rounded border border-[var(--color-border)]">Sempre aparecer</span>
                 </div>
               </div>
-              
-              <!-- Quick Actions on hover -->
               <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity max-sm:opacity-100">
                 <button class="p-1.5 rounded-md text-[var(--color-text-secondary)] hover:bg-[var(--color-income-bg)] hover:text-[var(--color-income)] transition-colors" @click="quickAdd(cat)" title="Adicionar Lançamento">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
@@ -61,7 +56,6 @@
               </div>
             </div>
 
-            <!-- Spending Data -->
             <div v-if="cat.budget_limit > 0" class="mt-2">
               <div class="flex justify-between items-end mb-2.5">
                 <div>
@@ -83,7 +77,6 @@
                 </div>
               </div>
             </div>
-            
             <div v-else class="mt-2">
               <p class="text-[24px] font-light tracking-tight text-[var(--color-text-primary)] leading-none mb-1">{{ fmt(spent[cat.name] || 0) }}</p>
               <p class="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-wider">Gasto no mês</p>
@@ -114,23 +107,19 @@
 
         <div v-else class="grid grid-cols-3 gap-5 max-lg:grid-cols-2 max-sm:grid-cols-1">
           <div v-for="cat in incomeCategories" :key="cat.id" class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl p-6 shadow-sm hover:border-[var(--color-text-tertiary)] transition-colors relative overflow-hidden group anim-card">
-            <!-- Top color accent -->
             <div class="absolute top-0 left-0 right-0 h-1" :style="{ backgroundColor: cat.color }"></div>
-            
             <div class="flex justify-between items-start mb-5">
               <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-sm" :style="{ backgroundColor: cat.color }">
                   <span class="font-bold text-[15px] uppercase tracking-widest">{{ cat.name.substring(0, 2) }}</span>
+                </div>
                 <div>
                   <h3 class="font-bold text-[15px] text-[var(--color-text-primary)]">{{ cat.name }}</h3>
                   <p v-if="cat.budget_limit > 0" class="text-[12px] font-medium text-[var(--color-text-secondary)] mt-0.5">Expectativa: {{ fmt(cat.budget_limit) }}</p>
                   <p v-else class="text-[12px] font-medium text-[var(--color-text-secondary)] mt-0.5">Sem valor definido</p>
-                  <span v-if="cat.name === 'Salário'" class="inline-block mt-1 text-[9px] font-black uppercase tracking-tighter bg-[var(--color-income-bg)] text-[var(--color-income)] px-1.5 py-0.5 rounded border border-[var(--color-income)]/20">Receita Fixa Recorrente</span>
-                </div>
-                  <span v-if="cat.name === 'Salário'" class="inline-block mt-1 text-[9px] font-black uppercase tracking-tighter bg-[var(--color-income-bg)] text-[var(--color-income)] px-1.5 py-0.5 rounded border border-[var(--color-income)]/20">Receita Fixa Recorrente</span>
+                  <span v-if="cat.is_recurring" class="inline-block mt-1 text-[9px] font-black uppercase tracking-tighter bg-[var(--color-income-bg)] text-[var(--color-income)] px-1.5 py-0.5 rounded border border-[var(--color-income)]/20">Receita Fixa Recorrente</span>
                 </div>
               </div>
-              
               <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity max-sm:opacity-100">
                 <button class="p-1.5 rounded-md text-[var(--color-text-secondary)] hover:bg-[var(--color-income-bg)] hover:text-[var(--color-income)] transition-colors" @click="quickAdd(cat)" title="Adicionar Receita">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
@@ -144,7 +133,6 @@
               </div>
             </div>
 
-            <!-- Income Data -->
             <div class="mt-2">
               <div class="flex justify-between items-end mb-2.5">
                 <div>
@@ -198,6 +186,7 @@
         </label>
         <input class="form-input" type="number" step="0.01" v-model.number="form.budget_limit" :placeholder="form.type === 'expense' ? '600' : '5000'" />
       </div>
+      
       <div class="mb-4 flex items-center justify-between p-4 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-secondary)]/30">
         <div>
           <p class="text-sm font-bold text-[var(--color-text-primary)]">Fixo / Sempre aparecer?</p>
@@ -205,6 +194,7 @@
         </div>
         <input type="checkbox" v-model="form.is_recurring" class="w-6 h-6 rounded border-[var(--color-border)] text-[var(--color-accent)] focus:ring-[var(--color-accent)] cursor-pointer">
       </div>
+
       <div class="mb-4">
         <label class="block text-xs font-semibold text-[var(--color-text-secondary)] mb-1.5 uppercase tracking-wider">Cor de Identificação</label>
         <div class="flex items-center gap-3">
@@ -224,8 +214,9 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useFinanceStore } from '../stores/finance.js'
 import { api } from '../api/index.js'
 import { useEventBus } from '../composables/useEventBus.js'
 import AppModal from '../components/AppModal.vue'
@@ -279,21 +270,17 @@ const monthTxns = computed(() =>
 
 const spent = computed(() => {
   const map = {}
-  // Start with actual transactions
   monthTxns.value.forEach(t => { 
     map[t.category] = (map[t.category] || 0) + t.amount 
   })
   
-  // Add projected subscriptions that haven't been processed yet this month
   subscriptions.value.filter(s => !!s.active).forEach(s => {
     const subTxnName = 'Assinatura: ' + s.name
     const hasBeenProcessed = monthTxns.value.some(t => t.name === subTxnName)
-    
     if (!hasBeenProcessed && s.category) {
       map[s.category] = (map[s.category] || 0) + s.amount
     }
   })
-  
   return map
 })
 
@@ -303,12 +290,13 @@ function getPct(cat) {
 }
 
 function isOver(cat) {
-  if (cat.type === 'income') return false // Income doesn't "exceed" budget in a negative way
+  if (cat.type === 'income') return false
   return cat.budget_limit > 0 && getPct(cat) >= 100
 }
 
 function isIncomeTargetMet(cat) {
-  return cat.type === 'income' && cat.budget_limit > 0 && (spent.value[cat.name] || 0) >= cat.budget_limit
+  const actualReceived = spent.value[cat.name] || 0
+  return cat.type === 'income' && cat.budget_limit > 0 && actualReceived >= cat.budget_limit && actualReceived > 0
 }
 
 function isWarn(cat) {
@@ -339,15 +327,15 @@ async function save() {
   
   if (editing.value) {
     updatedOrCreated = await api.updateCategory(editing.value, data)
-    categories.value = categories.value.map(c => c.id === editing.value ? updatedOrCreated : c)
   } else {
     updatedOrCreated = await api.createCategory(data)
-    categories.value = [...categories.value, updatedOrCreated]
   }
 
-  // Sincronizar com a Receita Base se a categoria for "Salário" ou se o usuário marcar como fixo
+  // Refresh all data from store to ensure consistency
+  await store.fetchData()
+  categories.value = store.categories
+
   if (updatedOrCreated.type === 'income' && (updatedOrCreated.name === 'Salário' || updatedOrCreated.is_recurring)) {
-    // Se for Salário, sempre sincroniza com a base do sistema para compatibilidade
     if (updatedOrCreated.name === 'Salário') {
       await store.updateSettings({ ...store.settings, monthly_salary: updatedOrCreated.budget_limit })
     }
@@ -357,7 +345,7 @@ async function save() {
 }
 
 async function remove(id) {
-  if (!confirm('Tem certeza que deseja excluir esta categoria? O histórico das transações será mantido, mas elas ficarão sem categoria.')) return
+  if (!confirm('Tem certeza que deseja excluir esta categoria?')) return
   await api.deleteCategory(id)
   categories.value = categories.value.filter(c => c.id !== id)
 }

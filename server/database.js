@@ -471,24 +471,24 @@ export async function resetDatabase() {
 
     // Add default categories
     const defaultCategories = [
-      { id: genId(), name: "Salário", type: "income", budget_limit: 0, color: "#34C759" },
-      { id: genId(), name: "Freelance", type: "income", budget_limit: 0, color: "#5AC8FA" },
-      { id: genId(), name: "Investimento", type: "income", budget_limit: 0, color: "#5856D6" },
-      { id: genId(), name: "Outros", type: "income", budget_limit: 0, color: "#8E8E93" },
-      { id: genId(), name: "Moradia", type: "expense", budget_limit: 2000, color: "#AF52DE" },
-      { id: genId(), name: "Alimentação", type: "expense", budget_limit: 800, color: "#FF9500" },
-      { id: genId(), name: "Transporte", type: "expense", budget_limit: 400, color: "#FF3B30" },
-      { id: genId(), name: "Saúde", type: "expense", budget_limit: 300, color: "#FF2D55" },
-      { id: genId(), name: "Lazer", type: "expense", budget_limit: 500, color: "#FFCC00" },
-      { id: genId(), name: "Educação", type: "expense", budget_limit: 600, color: "#007AFF" },
-      { id: genId(), name: "Compras", type: "expense", budget_limit: 500, color: "#FF9500" },
-      { id: genId(), name: "Assinaturas", type: "expense", budget_limit: 200, color: "#5AC8FA" }
+      { id: genId(), name: "Salário", type: "income", budget_limit: 0, color: "#34C759", is_recurring: 1 },
+      { id: genId(), name: "Freelance", type: "income", budget_limit: 0, color: "#5AC8FA", is_recurring: 0 },
+      { id: genId(), name: "Investimento", type: "income", budget_limit: 0, color: "#5856D6", is_recurring: 0 },
+      { id: genId(), name: "Outros", type: "income", budget_limit: 0, color: "#8E8E93", is_recurring: 0 },
+      { id: genId(), name: "Moradia", type: "expense", budget_limit: 2000, color: "#AF52DE", is_recurring: 1 },
+      { id: genId(), name: "Alimentação", type: "expense", budget_limit: 800, color: "#FF9500", is_recurring: 1 },
+      { id: genId(), name: "Transporte", type: "expense", budget_limit: 400, color: "#FF3B30", is_recurring: 1 },
+      { id: genId(), name: "Saúde", type: "expense", budget_limit: 300, color: "#FF2D55", is_recurring: 0 },
+      { id: genId(), name: "Lazer", type: "expense", budget_limit: 500, color: "#FFCC00", is_recurring: 0 },
+      { id: genId(), name: "Educação", type: "expense", budget_limit: 600, color: "#007AFF", is_recurring: 0 },
+      { id: genId(), name: "Compras", type: "expense", budget_limit: 500, color: "#FF9500", is_recurring: 0 },
+      { id: genId(), name: "Assinaturas", type: "expense", budget_limit: 200, color: "#5AC8FA", is_recurring: 1 }
     ];
 
     for (const cat of defaultCategories) {
       await db.run(
-        'INSERT INTO categories (id, name, type, budget_limit, color) VALUES (?, ?, ?, ?, ?)',
-        cat.id, cat.name, cat.type, cat.budget_limit, cat.color
+        'INSERT INTO categories (id, name, type, budget_limit, color, is_recurring) VALUES (?, ?, ?, ?, ?, ?)',
+        cat.id, cat.name, cat.type, cat.budget_limit, cat.color, cat.is_recurring
       );
     }
 
