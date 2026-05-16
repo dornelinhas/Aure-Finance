@@ -6,7 +6,7 @@
       <div class="px-8 pt-8 flex items-start justify-between gap-4 flex-wrap mb-4">
         <div>
           <h1 class="text-[28px] font-extrabold tracking-tight text-[var(--color-text-primary)]">Categorias</h1>
-          <p class="text-[13px] text-[var(--color-text-secondary)] mt-1 font-medium">Personalize seu planejamento financeiro</p>
+          <p class="text-[13px] text-[var(--color-text-secondary)] mt-1 font-medium italic text-blue-500">Versão Atualizada: 18:50 (Verifique o Interruptor Azul)</p>
         </div>
         <div class="flex gap-2">
           <button class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold cursor-pointer transition-all duration-150 border-none bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)]" @click="openModal()">Nova Categoria</button>
@@ -35,8 +35,8 @@
                 <div>
                   <h3 class="font-bold text-[15px] text-[var(--color-text-primary)]">{{ cat.name }}</h3>
                   <p v-if="cat.budget_limit > 0" class="text-[12px] font-medium text-[var(--color-text-secondary)]">Limite: {{ fmt(cat.budget_limit) }}</p>
-                  <p v-else class="text-[12px] font-medium text-[var(--color-text-secondary)]">Sem limite definido</p>
-                  <span v-if="cat.is_recurring" class="inline-block mt-1 text-[9px] font-black uppercase tracking-tighter bg-[var(--color-surface-secondary)] text-[var(--color-text-secondary)] px-1.5 py-0.5 rounded border border-[var(--color-border)]">Sempre aparecer</span>
+                  <p v-else class="text-[12px] font-medium text-[var(--color-text-secondary)]">Sem limite</p>
+                  <span v-if="cat.is_recurring" class="inline-block mt-1 text-[10px] font-black uppercase bg-blue-100 text-blue-600 px-2 py-0.5 rounded border border-blue-200">Categoria Fixa</span>
                 </div>
               </div>
               <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity max-sm:opacity-100">
@@ -72,9 +72,9 @@
             <div class="w-2 h-6 bg-[var(--color-income)] rounded-full"></div>
             <h2 class="text-lg font-bold text-[var(--color-text-primary)]">Receitas</h2>
           </div>
-          <div class="bg-[var(--color-income-bg)] border border-[var(--color-income)]/20 px-4 py-2 rounded-xl flex items-center gap-3">
-             <span class="text-[10px] font-black uppercase tracking-widest text-[var(--color-income)]">Receita Base</span>
-             <span class="text-lg font-black text-[var(--color-income)]">{{ fmt(store.settings.monthly_salary) }}</span>
+          <div class="bg-blue-50 border border-blue-200 px-4 py-2 rounded-xl flex items-center gap-3">
+             <span class="text-[10px] font-black uppercase tracking-widest text-blue-600">Receita Fixa Total</span>
+             <span class="text-lg font-black text-blue-600">{{ fmt(store.settings.monthly_salary) }}</span>
           </div>
         </div>
 
@@ -94,7 +94,7 @@
                   <h3 class="font-bold text-[15px] text-[var(--color-text-primary)]">{{ cat.name }}</h3>
                   <p v-if="cat.budget_limit > 0" class="text-[12px] font-medium text-[var(--color-text-secondary)]">Expectativa: {{ fmt(cat.budget_limit) }}</p>
                   <p v-else class="text-[12px] font-medium text-[var(--color-text-secondary)]">Sem valor definido</p>
-                  <span v-if="cat.is_recurring" class="inline-block mt-1 text-[9px] font-black uppercase tracking-tighter bg-[var(--color-income-bg)] text-[var(--color-income)] px-1.5 py-0.5 rounded border border-[var(--color-income)]/20">Receita Fixa</span>
+                  <span v-if="cat.is_recurring" class="inline-block mt-1 text-[10px] font-black uppercase bg-blue-100 text-blue-600 px-2 py-0.5 rounded border border-blue-200">Receita Fixa</span>
                 </div>
               </div>
               <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity max-sm:opacity-100">
@@ -111,12 +111,12 @@
                   <p class="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-wider">Recebido no mês</p>
                 </div>
                 <div class="text-right">
-                  <span v-if="isIncomeTargetMet(cat)" class="inline-flex items-center gap-1 text-[12px] font-bold text-[var(--color-income)] bg-[var(--color-income-bg)] px-2 py-0.5 rounded-md">Meta Batida!</span>
+                  <span v-if="isIncomeTargetMet(cat)" class="inline-flex items-center gap-1 text-[12px] font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-md border border-green-200">Meta Batida!</span>
                   <span v-else-if="cat.budget_limit > 0" class="text-[12px] font-bold text-[var(--color-text-secondary)]">Faltam {{ fmt(cat.budget_limit - (spent[cat.name] || 0)) }}</span>
                 </div>
               </div>
               <div class="h-2 w-full bg-[var(--color-surface-secondary)] rounded-full overflow-hidden flex">
-                <div class="h-full transition-all duration-500 rounded-full" :style="{ width: (cat.budget_limit > 0 ? getPct(cat) : 0) + '%', backgroundColor: isIncomeTargetMet(cat) ? 'var(--color-income)' : cat.color }"></div>
+                <div class="h-full transition-all duration-500 rounded-full" :style="{ width: (cat.budget_limit > 0 ? getPct(cat) : 0) + '%', backgroundColor: isIncomeTargetMet(cat) ? '#10b981' : cat.color }"></div>
               </div>
             </div>
           </div>
@@ -125,43 +125,48 @@
     </div>
 
     <!-- Modal -->
-    <AppModal :visible="showModal" :title="editing ? 'Editar Categoria' : 'Nova Categoria'" @close="closeModal">
-      <div class="space-y-4">
-        <div>
-          <label class="block text-xs font-bold text-[var(--color-text-secondary)] uppercase mb-2">Tipo</label>
-          <div class="flex gap-2">
-            <button v-for="t in [['income','Receita'],['expense','Despesa']]" :key="t[0]" @click="form.type = t[0]" class="flex-1 py-2 rounded-lg border text-sm font-bold transition-all" :class="form.type === t[0] ? 'bg-[var(--color-accent)] text-white border-[var(--color-accent)]' : 'bg-transparent text-[var(--color-text-secondary)] border-[var(--color-border)]'">{{ t[1] }}</button>
-          </div>
-        </div>
-        <div>
-          <label class="block text-xs font-bold text-[var(--color-text-secondary)] uppercase mb-1.5">Nome</label>
-          <input class="form-input" v-model="form.name" placeholder="Ex: Salário, Aluguel..." />
-        </div>
-        <div>
-          <label class="block text-xs font-bold text-[var(--color-text-secondary)] uppercase mb-1.5">{{ form.type === 'expense' ? 'Limite Mensal' : 'Expectativa Mensal' }}</label>
-          <input class="form-input" type="number" v-model.number="form.budget_limit" />
-        </div>
-
-        <!-- RECURRING OPTION - HIGHLIGHTED -->
-        <div class="p-4 rounded-xl border-2 border-[var(--color-accent)]/30 bg-[var(--color-accent)]/5 flex items-center justify-between">
-          <div>
-            <p class="text-sm font-black text-[var(--color-text-primary)]">Fixo / Sempre aparecer?</p>
-            <p class="text-[10px] text-[var(--color-text-secondary)] font-medium leading-tight">Inclui automaticamente este valor nas suas projeções mensais.</p>
+    <AppModal :visible="showModal" title="CONFIGURAR CATEGORIA" @close="closeModal">
+      <div class="space-y-5 py-2">
+        <!-- 1. RECURRING TOGGLE (TOP PRIORITY) -->
+        <div class="p-4 rounded-2xl border-2 border-blue-500/40 bg-blue-50 flex items-center justify-between shadow-sm">
+          <div class="flex-1 pr-4">
+            <p class="text-[15px] font-black text-blue-900 uppercase tracking-tight">Fixo / Sempre aparecer?</p>
+            <p class="text-[11px] text-blue-700 font-bold leading-tight mt-1">Este valor será somado automaticamente em todos os meses futuros.</p>
           </div>
           <label class="relative inline-flex items-center cursor-pointer">
             <input type="checkbox" v-model="form.is_recurring" class="sr-only peer">
-            <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--color-accent)]"></div>
+            <div class="w-14 h-7 bg-gray-300 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 shadow-inner"></div>
           </label>
         </div>
 
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-[10px] font-black text-[var(--color-text-secondary)] uppercase mb-1.5">Tipo</label>
+            <div class="flex gap-1.5 p-1 bg-[var(--color-surface-secondary)] rounded-xl border border-[var(--color-border)]">
+              <button v-for="t in [['income','Ganho'],['expense','Gasto']]" :key="t[0]" @click="form.type = t[0]" class="flex-1 py-2 rounded-lg text-[11px] font-black uppercase transition-all" :class="form.type === t[0] ? 'bg-white text-[var(--color-text-primary)] shadow-sm' : 'bg-transparent text-[var(--color-text-tertiary)] border-none'">{{ t[1] }}</button>
+            </div>
+          </div>
+          <div>
+            <label class="block text-[10px] font-black text-[var(--color-text-secondary)] uppercase mb-1.5">Cor</label>
+            <input type="color" v-model="form.color" class="w-full h-[46px] rounded-xl cursor-pointer border border-[var(--color-border)] p-1 bg-white" />
+          </div>
+        </div>
+
         <div>
-          <label class="block text-xs font-bold text-[var(--color-text-secondary)] uppercase mb-1.5">Cor</label>
-          <input type="color" v-model="form.color" class="w-full h-10 rounded-lg cursor-pointer border-none p-0" />
+          <label class="block text-[10px] font-black text-[var(--color-text-secondary)] uppercase mb-1.5">Nome da Categoria</label>
+          <input class="form-input !py-3 !rounded-xl !text-base font-bold" v-model="form.name" placeholder="Ex: Salário, Aluguel, Uber..." />
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-black text-[var(--color-text-secondary)] uppercase mb-1.5">Valor Mensal (R$)</label>
+          <input class="form-input !py-3 !rounded-xl !text-xl font-black text-blue-600" type="number" v-model.number="form.budget_limit" placeholder="0,00" />
         </div>
       </div>
       <template #footer>
-        <button class="px-4 py-2 rounded-lg border border-[var(--color-border)] text-sm font-bold" @click="closeModal">Cancelar</button>
-        <button class="px-4 py-2 rounded-lg bg-[var(--color-accent)] text-white text-sm font-bold border-none" @click="save">Salvar</button>
+        <div class="flex gap-3 w-full">
+          <button class="flex-1 px-6 py-3 rounded-xl border border-[var(--color-border)] text-sm font-black uppercase tracking-wider" @click="closeModal">Cancelar</button>
+          <button class="flex-[2] px-6 py-3 rounded-xl bg-blue-600 text-white text-sm font-black uppercase tracking-wider shadow-lg shadow-blue-200" @click="save">Salvar Alterações</button>
+        </div>
       </template>
     </AppModal>
   </div>
@@ -188,7 +193,6 @@ const fmt = v => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: '
 
 const categories = ref([])
 const transactions = ref([])
-const subscriptions = ref([])
 const showModal = ref(false)
 const editing = ref(null)
 
@@ -199,7 +203,6 @@ async function fetchData() {
   await store.fetchData()
   categories.value = store.categories
   transactions.value = store.transactions
-  subscriptions.value = store.subscriptions
 }
 
 onMounted(() => {
@@ -237,6 +240,7 @@ function isOver(cat) {
 
 function isIncomeTargetMet(cat) {
   const actual = spent.value[cat.name] || 0
+  // SÓ BATE A META SE RECEBER VALOR REAL > 0
   return cat.type === 'income' && cat.budget_limit > 0 && actual >= cat.budget_limit && actual > 0
 }
 
@@ -270,6 +274,9 @@ function closeModal() {
 async function save() {
   if (!form.value.name) return
   const data = { ...form.value, budget_limit: Number(form.value.budget_limit) || 0 }
+  
+  console.log('[DEBUG] Saving Category:', data);
+
   let res;
   if (editing.value) {
     res = await api.updateCategory(editing.value, data)
@@ -277,7 +284,7 @@ async function save() {
     res = await api.createCategory(data)
   }
 
-  // Sync Salary Setting
+  // Sincroniza Salário com Configurações Base do sistema
   if (res.name === 'Salário' && res.type === 'income') {
     await store.updateSettings({ ...store.settings, monthly_salary: res.budget_limit })
   }
@@ -288,7 +295,7 @@ async function save() {
 }
 
 async function remove(id) {
-  if (!confirm('Excluir categoria?')) return
+  if (!confirm('Excluir esta categoria?')) return
   await api.deleteCategory(id)
   await store.fetchData()
   categories.value = store.categories
