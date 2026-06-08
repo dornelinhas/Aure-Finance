@@ -215,12 +215,11 @@ async function save() {
   if (!form.value.name || !form.value.amount) return
   const data = { ...form.value, amount: Number(form.value.amount) }
   if (editing.value) {
-    const updated = await api.updateSubscription(editing.value, data)
-    subscriptions.value = subscriptions.value.map(s => s.id === editing.value ? updated : s)
+    await api.updateSubscription(editing.value, data)
   } else {
-    const created = await api.createSubscription(data)
-    subscriptions.value = [...subscriptions.value, created]
+    await api.createSubscription(data)
   }
+  await load()
   emit('transaction-added') // In case a subscription was processed immediately
   closeModal()
 }

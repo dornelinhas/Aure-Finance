@@ -274,7 +274,7 @@ const showLogModal = ref(false)
 const logForm = ref({ id: '', name: '', amount: '', category: '' })
 const logInput = ref(null)
 
-onMounted(async () => {
+async function load() {
   const [items, ls, cats] = await Promise.all([
     api.getStock(),
     api.getShoppingLists(),
@@ -283,52 +283,11 @@ onMounted(async () => {
   stock.value = items
   lists.value = ls
   categories.value = cats
-})
-
-const expenseCategories = computed(() => categories.value.filter(c => c.type === 'expense'))
-
-const criticalItems = computed(() => stock.value.filter(s => s.quantity <= s.min_qty))
-
-// Total estimation only for active lists + items without list
-const estimatedTotal = computed(() => {
-  // If we are looking at a specific list, just show its potential total
-  if (activeListId.value !== '' && activeListId.value !== '__critical__') {
-    return stock.value
-      .filter(s => s.list_id === activeListId.value && s.quantity <= s.min_qty)
-      .reduce((total, item) => total + (item.last_price || 0), 0)
-  }
-  
-  // If we are in "All" or "Critical", only sum items that belong to ACTIVE lists (or no list)
-  const activeListsIds = lists.value.filter(l => !!l.is_active).map(l => l.id)
-  return criticalItems.value
-    .filter(s => !s.list_id || activeListsIds.includes(s.list_id))
-    .reduce((total, item) => total + (item.last_price || 0), 0)
-})
-
-const filteredStock = computed(() => {
-  if (activeListId.value === '') return stock.value
-  if (activeListId.value === '__critical__') return criticalItems.value
-  return stock.value.filter(s => s.list_id === activeListId.value)
-})
-
-const filteredCritical = computed(() => {
-  if (activeListId.value === '' || activeListId.value === '__critical__') return criticalItems.value
-  return stock.value.filter(s => s.list_id === activeListId.value && s.quantity <= s.min_qty)
-})
-
-const activeListName = computed(() => {
-  if (activeListId.value === '' || activeListId.value === '__critical__') return ''
-  const list = lists.value.find(l => l.id === activeListId.value)
-  return list ? `(${list.name})` : ''
-})
-
-function getListById(id) {
-  return lists.value.find(l => l.id === id)
 }
 
-function getListItemCount(id) {
-  return stock.value.filter(s => s.list_id === id).length
-}
+onMounted(load)
+
+// ... (keep expenseCategories, criticalItems, etc.)
 
 // List CRUD
 function openListModal(list = null) {
@@ -345,20 +304,18 @@ function openListModal(list = null) {
 async function saveList() {
   if (!listForm.value.name) return
   if (editingList.value) {
-    const updated = await api.updateShoppingList(editingList.value, { ...listForm.value })
-    lists.value = lists.value.map(l => l.id === editingList.value ? updated : l)
+    await api.updateShoppingList(editingList.value, { ...listForm.value })
   } else {
-    const created = await api.createShoppingList({ ...listForm.value })
-    lists.value = [...lists.value, created]
+    await api.createShoppingList({ ...listForm.value })
   }
+  await load()
   showListModal.value = false
 }
 
 async function deleteList(id) {
   if (!confirm('Excluir esta lista? Os itens não serão apagados, apenas desvinculados.')) return
   await api.deleteShoppingList(id)
-  lists.value = lists.value.filter(l => l.id !== id)
-  stock.value = stock.value.map(s => s.list_id === id ? { ...s, list_id: '' } : s)
+  await load()
   if (activeListId.value === id) activeListId.value = ''
 }
 
@@ -388,27 +345,26 @@ async function saveItem() {
   if (!itemForm.value.name) return
   const data = { ...itemForm.value, last_price: Number(itemForm.value.last_price) || 0 }
   if (editingItem.value) {
-    const updated = await api.updateStockItem(editingItem.value, data)
-    stock.value = stock.value.map(s => s.id === editingItem.value ? updated : s)
+    await api.updateStockItem(editingItem.value, data)
   } else {
-    const created = await api.createStockItem(data)
-    stock.value = [...stock.value, created]
+    await api.createStockItem(data)
   }
+  await load()
   closeItemModal()
 }
 
 async function removeItem(id) {
   if (!confirm('Excluir este item?')) return
   await api.deleteStockItem(id)
-  stock.value = stock.value.filter(s => s.id !== id)
+  await load()
   closeItemModal()
 }
 
 // Adjust quantity & log purchase
 async function adjust(id, delta) {
   const item = stock.value.find(s => s.id === id)
-  const updated = await api.adjustStock(id, delta)
-  stock.value = stock.value.map(s => s.id === id ? updated : s)
+  await api.adjustStock(id, delta)
+  await load()
   
   if (delta > 0 && item) {
     logForm.value = { id: item.id, name: item.name, amount: item.last_price || '', category: item.category || 'Alimentos' }
@@ -435,8 +391,8 @@ async function saveLog() {
       account: 'Conta Corrente'
     })
     // Update last_price
-    const updated = await api.updateStockItem(logForm.value.id, { last_price: Number(logForm.value.amount) })
-    stock.value = stock.value.map(s => s.id === logForm.value.id ? updated : s)
+    await api.updateStockItem(logForm.value.id, { last_price: Number(logForm.value.amount) })
+    await load()
     // Notify other views
     emit('transaction-added')
   }

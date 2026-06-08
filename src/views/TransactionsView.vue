@@ -622,16 +622,11 @@ async function save() {
     }
     
     if (editing.value) {
-      const updated = await api.updateTransaction(editing.value, data)
-      transactions.value = transactions.value.map(t => t.id === editing.value ? updated : t)
+      await api.updateTransaction(editing.value, data)
     } else {
-      const created = await api.createTransaction(data)
-      if (Array.isArray(created)) {
-          transactions.value = [...created, ...transactions.value]
-      } else {
-          transactions.value = [created, ...transactions.value]
-      }
+      await api.createTransaction(data)
     }
+    transactions.value = await api.getTransactions()
     emit('transaction-added')
     closeModal()
   } catch (err) {
